@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Build files
+src/server/**/**.js
+src/server/**/**.js.map
+static/index.js
+static/index.js.map
