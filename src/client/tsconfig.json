@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "lib": ["DOM", "ESNext"],
+        "rootDir": "..",
+        "outDir": "../../dist",
+        "sourceMap": true,
+        "moduleResolution": "bundler",
+        "module": "esnext",
+        "target": "es2020",
+        "jsx": "preserve",
+        "jsxImportSource": "preact",
+        "jsxFactory": "h",
+        "jsxFragmentFactory": "Fragment"
+    },
+    "include": ["**/*.tsx"]
+}
