@@ -24,7 +24,7 @@ await esbuild.build({
     bundle: true,
     minify: true,
     sourcemap: true,
-    external: ["express"],
+    external: ["express", "mongoose", "fs", "dotenv"],
     format: "esm",
     outdir: "src/server"
 });
