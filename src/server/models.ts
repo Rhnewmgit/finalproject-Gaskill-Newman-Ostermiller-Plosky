@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import { InferSchemaType, model, Schema, Types } from "mongoose";
 
 const courseSectionSchema = new Schema({
     name: {
@@ -58,7 +58,15 @@ const courseSectionSchema = new Schema({
     }, // ex. "Unity Hall 420"
 })
 
-export const CourseSection = model("CourseSection", courseSectionSchema);
+courseSectionSchema.index({
+    code: 1,
+    section: 1
+}, {
+    unique: true
+}) // The combination of course code and course section should be unique
+
+export type CourseSectionDocument = InferSchemaType<typeof courseSectionSchema>;
+export const CourseSection = model<CourseSectionDocument>("CourseSection", courseSectionSchema);
 
 const userSchema = new Schema({
     username: {
@@ -83,4 +91,5 @@ const userSchema = new Schema({
     courses: [Types.ObjectId]
 })
 
+export type UserDocument = InferSchemaType<typeof userSchema.obj>;
 export const User = model("User", userSchema);
