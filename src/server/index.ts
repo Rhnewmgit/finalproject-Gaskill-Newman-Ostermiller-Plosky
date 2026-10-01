@@ -3,6 +3,7 @@ import { join } from "path"
 import { getName } from "../shared/index.js"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
+import { courseRoutes } from "./courses.js"
 
 dotenv.config()
 
@@ -15,6 +16,8 @@ await mongoose.connect(uri)
 // https://mongoosejs.com/docs/index.html
 
 app.use(express.static(join(import.meta.dirname, "../../static")))
+
+courseRoutes(app);
 
 app.get("/{*a}", (req: express.Request, res: express.Response) => {
     res.sendFile(join(import.meta.dirname, "../client/index.html"))
