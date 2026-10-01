@@ -10,6 +10,7 @@ import fetch from "node-fetch"
 import {CourseSection, User} from "./models.js"
 import busboy from "busboy";
 import parseXLSX from "./xlsxHandler.js";
+import { courseRoutes } from "./courses.js"
 
 dotenv.config()
 
@@ -52,6 +53,11 @@ app.post("/courseFile", (req: express.Request, res: express.Response) => {
 		res.end();
 	});
 	req.pipe(bb);
+});
+courseRoutes(app);
+
+app.get("/{*a}", (req: express.Request, res: express.Response) => {
+    res.sendFile(join(import.meta.dirname, "../client/index.html"))
 })
 
 app.get("/{*a}", (req: express.Request, res: express.Response) => {
