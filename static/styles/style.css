@@ -1,3 +1,42 @@
 html {
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.schedule {
+    --height-per-minute: 1.5px;
+    --height-per-hour: calc(var(--height-per-minute) * 60);
+    width: 100%;
+    border-collapse: collapse;
+
+    tbody tr {
+        height: var(--height-per-hour);
+    }
+
+    td, th {
+        width: 18%;
+        --width: 18%;
+        border: solid 1px black;
+        box-sizing: border-box;
+
+        &:not(:first-child) {
+            vertical-align: top;
+        }
+
+        div {
+            overflow: clip;
+            position: absolute;
+            background-color: #ddd;
+            width: calc(var(--width) - 6px);
+            box-sizing: border-box;
+            padding: 5px;
+
+            p {
+                margin: 0.5em 0;
+            }
+        }
+    }
+
+    th:first-child {
+        width: 10%;
+    }
+}
