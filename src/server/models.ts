@@ -35,9 +35,9 @@ const courseSectionSchema = new Schema({
         type: [{
             type: Number,
             min: 0,
-            max: 4
+            max: 6
         }],
-        validate: (val: any) => Array.isArray(val) && val.length >= 0 && val.length <= 5
+        validate: (val: any) => Array.isArray(val) && val.length >= 0 && val.length <= 7
     }, // ex. [1, 4] for Tuesday and Friday
     startTime: {
         type: Number,
@@ -60,7 +60,8 @@ const courseSectionSchema = new Schema({
 
 courseSectionSchema.index({
     code: 1,
-    section: 1
+    section: 1,
+    academicYearStart: 1
 }, {
     unique: true
 }) // The combination of course code and course section should be unique
