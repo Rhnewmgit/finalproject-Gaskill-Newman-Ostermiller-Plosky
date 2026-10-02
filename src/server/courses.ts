@@ -12,11 +12,15 @@ export function courseRoutes (app: express.Express) {
             });
             return;
         }
-
+        
         const courseSections = await CourseSection.find({
-            _id: {
-                $in: user.courses.map(courseId => new Types.ObjectId(courseId as unknown as string))
-            }
+            $or: user.courses.map(course => {
+                return {
+                    code: course.code,
+                    section: course.section,
+                    academicYearStart: course.academicYear
+                }
+            })
         })
 
         res.status(200).json(courseSections);
