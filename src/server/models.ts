@@ -20,7 +20,7 @@ const courseSectionSchema = new Schema({
     term: {
         required: true,
         type: String, // ex. "A"
-        enum: ["A", "B", "C", "D", "E1", "E2", "F", "S", "E"] // "F" is for fall, "S" is for spring, "E" is for full summer
+        enum: ["A", "B", "C", "D", "E1", "E2", "F", "S", "E", "G"] // "F" is for fall, "S" is for spring, "E" is for full summer
     },
     academicYearStart: {
         required: true,
