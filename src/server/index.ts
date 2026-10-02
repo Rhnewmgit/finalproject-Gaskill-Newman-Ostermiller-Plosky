@@ -4,6 +4,7 @@ import { getName } from "../shared/index.js"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 import fetch from "node-fetch"
+import {CourseSection, User} from "./models.js"
 
 dotenv.config()
 
@@ -30,15 +31,24 @@ async function fetchCourseData(){
     data.Report_Entry.forEach(course => {
         courseObjects.push(createCourseSection(course))
     });
+    const startYear = courseObjects[0].academicYearStart
+    console.log(startYear)
+    console.log(await CourseSection.find({academicYearStart: startYear}))
+    await CourseSection.deleteMany({academicYearStart: startYear})
     // Print a selection of courses
-    console.log(courseObjects[1]) // Random selection
-    console.log(courseObjects[155]) // Random selection
-    console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
-    console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
-    console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
-    console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
+    console.log(courseObjects[0]) // Random selection
+    // console.log(courseObjects[155]) // Random selection
+    // console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
+    // console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
+    // console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
+    // console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
+    
     // TODO: add the new courses to the database
-    // mongoose.COLLECTION.insertMany(courseObjects)
+    // CourseSection.bulkSave(courseObjects)
+    courseObjects[0].save()
+    courseObjects[1].save()
+    courseObjects[2].save()
+    courseObjects[3].save()
 }
 fetchCourseData()
 
@@ -60,8 +70,8 @@ function createCourseSection(course){
     const termLetter = course.Starting_Academic_Period_Type.charAt(0)
     let startYear = Number(course.Offering_Period.substring(0,4))
     let endYear = startYear + 1
-    if(termLetter != 'A' && termLetter != 'B'){
-        // termletter == C, D, E
+    if(termLetter != 'A' && termLetter != 'B' && termLetter != 'F'){
+        // termletter == C, D, E, S
         startYear--
         endYear--
     }
@@ -111,7 +121,7 @@ function createCourseSection(course){
     course.Instructors.split('; ')
 
     // MAKE EVERYTHING INTO AN OBJECT
-    const courseObject: CourseSection = {
+    const courseObject = new CourseSection({
         name:name,
         code:sectionstring[0],
         type:course.Instructional_Format,
@@ -122,7 +132,7 @@ function createCourseSection(course){
         meetingDays:meetingDays,
         professors:course.Instructors.split('; '),
         location:course.Locations
-    }
+    });
     // Only add times if they exist
     if(startTime != -1){
         courseObject.startTime = startTime
