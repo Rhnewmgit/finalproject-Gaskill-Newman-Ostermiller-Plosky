@@ -1,7 +1,6 @@
 import { render } from "preact"
-import { useState } from "preact/hooks"
 
-import { getName } from "../shared/index"
+import { Schedule } from "./Schedule.js";
 
 function App() {
     const [count, setCount] = useState(0);
@@ -20,10 +19,7 @@ function App() {
     }
 
     return <>
-        <h1>{getName()}</h1>
-        <button onClick={() => {
-            setCount(count + 1);
-        }}>Clicked {count} time{count === 1 ? "" : "s"}</button>
+        <Schedule user="6abec107e87c336129be6ac2" />
         <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
     </>
 }

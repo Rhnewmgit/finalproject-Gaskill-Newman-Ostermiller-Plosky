@@ -3,6 +3,7 @@ import { join } from "path"
 import { getName } from "../shared/index.js"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
+import { courseRoutes } from "./courses.js"
 import busboy from "busboy";
 import parseXLSX from "./xlsxHandler.js";
 
