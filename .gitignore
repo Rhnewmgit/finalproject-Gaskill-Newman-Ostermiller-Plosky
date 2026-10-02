@@ -30,3 +30,4 @@ static/index.js
 static/index.js.map
 
 .env
+nodemon.json

@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/busboy": "^1.5.4",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.2",
     "esbuild": "^0.28.2",
@@ -7,10 +8,12 @@
   },
   "dependencies": {
     "@preact/signals": "^2.11.2",
+    "busboy": "^1.6.0",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "mongoose": "^9.10.2",
-    "preact": "^10.29.8"
+    "preact": "^10.29.8",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "scripts": {
     "build": "node build.mjs",
