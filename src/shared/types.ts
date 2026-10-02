@@ -3,7 +3,11 @@ export type User = {
     password: string
     token: string
     tokenExpiry: number
-    courses: string[]
+    courses: {
+        code: string,
+        section: string,
+        academicYear: number
+    }[]
 }
 
 export type CourseSection = {
