@@ -20,6 +20,7 @@ await mongoose.connect(uri)
 app.use(express.static(join(import.meta.dirname, "../../static")))
 
 app.use(express.json());
+courseRoutes(app);
 
 // Handles receiving the .xlsx file from the user
 app.post("/courseFile", (req: express.Request, res: express.Response) => {
