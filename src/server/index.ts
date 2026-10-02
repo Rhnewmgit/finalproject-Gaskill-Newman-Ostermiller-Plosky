@@ -56,48 +56,76 @@ app.get("/{*a}", (req: express.Request, res: express.Response) => {
 	res.sendFile(join(import.meta.dirname, "../client/index.html"))
 })
 
+// Updates the course data in the database for the current year based on the
+// data provided from WPI's server
 async function fetchCourseData(){
+    // Fetch data
     let url = 'https://courselistings.wpi.edu/assets/prod-data.json'
     const response = await fetch(url)
     const data = await response.json()
+
+    // Convert data to CourseSection objects
     const courseObjects = []
-    // TODO: remove all courses for the current year from the database
     data.Report_Entry.forEach(course => {
-        courseObjects.push(createCourseSection(course))
+        if(course.Section_Status != "Waitlist"){
+            courseObjects.push(createCourseSection(course))
+        }
     });
-    const startYear = courseObjects[0].academicYearStart
-    console.log(startYear)
-    console.log(await CourseSection.find({academicYearStart: startYear}))
-    await CourseSection.deleteMany({academicYearStart: startYear})
-    // Print a selection of courses
-    console.log(courseObjects[0]) // Random selection
-    // console.log(courseObjects[155]) // Random selection
-    // console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
-    // console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
-    // console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
-    // console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
+
+    // Print a selection of courses for verification purposes
+    console.log("Selection of courses created:")
+    console.log(courseObjects[0]) // Generic course
+    console.log(courseObjects[155]) // Generic course
+    console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
+    console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
+    console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
+    console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
     
-    // TODO: add the new courses to the database
-    // CourseSection.bulkSave(courseObjects)
-    courseObjects[0].save()
-    courseObjects[1].save()
-    courseObjects[2].save()
-    courseObjects[3].save()
+    // Delete prior data for current year (assumes all classes in this file are
+    // from the same year)
+    const startYear = courseObjects[0].academicYearStart
+    console.log('Deleting old data...')
+    await CourseSection.deleteMany({academicYearStart: startYear})
+    console.log('Data deleted.')
+    
+    // Send the new courses to the database
+    console.log("Sending data to database...")
+    CourseSection.bulkSave(courseObjects)
+
+    /* DEBUG: instead of bulksave, send each course individually so that the
+       bulk printing of ids doesn't push the error off the screen */
+    // courseObjects.forEach(element => {
+    //     element.save()
+    // });
+
+    console.log("Successfully sent all courses.")
 }
-fetchCourseData()
+
+/* Actually runs the function that fetches the course data */
+// fetchCourseData()
 
 // Given a json object representing a course with the fields present in the data
 // recieved from WPI, creates a CourseSection object
 function createCourseSection(course){
     // PARSE NAME:
-    // course.Course_Section is in format 'CS 4241-A01 - Webware'
-    // Split on hyphen to get 'CS 4241', 'A01 ', ' Webware'
-    let sectionstring = course.Course_Section.split('-')
-    // Remove leading space from name
-    let name = sectionstring[2].slice(1)
-    // Name might have a hyphen in it: if so, reconstruct it
-    for(let i = 3; i < sectionstring.length; i++){
-        name += '-' + sectionstring[i]
+    // course.Course_Section is in format 'CS 4241-A01-X - Webware'
+    // Split on hyphen surrounded by spaces to get 'CS 4241-A01-X', 'Webware'
+    const sectionstring = course.Course_Section.split(' - ')
+ 
+    // Split on hyphen to get 'CS 4241' 'A01' 'X'
+    const courseCodeFull = sectionstring[0].split('-')
+    const code = courseCodeFull[0]
+
+    let section = courseCodeFull[1]
+    // If there are additional parts to the section code, add them
+    for(let i = 2; i < courseCodeFull.length; i++){
+        section += '-' + courseCodeFull[i]
+    }
+
+    let name = sectionstring[1]
+    // Name might have ' - ' in it: if so, add extra pieces back
+    for(let i = 2; i < sectionstring.length; i++){
+        name += ' - ' + sectionstring[i]
     }
 
     // FIND FULL ACADEMIC YEAR:
@@ -157,9 +185,9 @@ function createCourseSection(course){
     // MAKE EVERYTHING INTO AN OBJECT
     const courseObject = new CourseSection({
         name:name,
-        code:sectionstring[0],
+        code:code,
         type:course.Instructional_Format,
-        section:sectionstring[1].slice(0,-1),
+        section:section,
         term:termLetter,
         academicYearStart:startYear,
         academicYearEnd:endYear,
@@ -183,7 +211,7 @@ function timeToMinutesPastMidnight(timestring){
     const mins = Number(parts[1].substring(0,2))
     const meridian = parts[1].substring(3)
     let time = hour * 60 + mins
-    if(meridian == 'PM'){
+    if(meridian == 'PM' && hour != 12){
         time += 12*60
     }
     return time
