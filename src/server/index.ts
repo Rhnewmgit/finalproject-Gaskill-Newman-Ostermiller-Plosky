@@ -29,34 +29,53 @@ async function fetchCourseData(){
     let url = 'https://courselistings.wpi.edu/assets/prod-data.json'
     const response = await fetch(url)
     const data = await response.json()
+    const yearcounts = []
 
     // Convert data to CourseSection objects
     const courseObjects = []
     data.Report_Entry.forEach(course => {
-        if(course.Section_Status != "Waitlist"){
-            courseObjects.push(createCourseSection(course))
-        }
+        courseObjects.push(createCourseSection(course, yearcounts))
     });
 
     // Print a selection of courses for verification purposes
-    console.log("Selection of courses created:")
-    console.log(courseObjects[0]) // Generic course
-    console.log(courseObjects[155]) // Generic course
-    console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
-    console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
-    console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
-    console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
+    // console.log("Selection of courses created:")
+    // console.log(courseObjects[0]) // Generic course
+    // console.log(courseObjects[155]) // Generic course
+    // console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
+    // console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
+    // console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
+    // console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
     
-    // Delete prior data for current year (assumes all classes in this file are
-    // from the same year)
-    const startYear = courseObjects[0].academicYearStart
     console.log('Deleting old data...')
-    await CourseSection.deleteMany({academicYearStart: startYear})
-    console.log('Data deleted.')
+
+    // Removes all the old courses for the years associated with the incoming file.
+    // Assumes that any year with less than 10 courses associated with it is
+    // erroneous data and discards it.
+    let countDeleted = 0
+    let countRemoved = 0
+    // For each year, check if the count is less than 10
+    for (const y of yearcounts){
+        if(y.count >= 10){
+            // If there are more than 10, delete all the old courses for that year
+            let newdeleted = await CourseSection.deleteMany({academicYearStart: y.year})
+            countDeleted += await newdeleted.deletedCount
+        }
+        else{
+            // Otherwise, discard all new courses for that year
+            let nextOfYear = courseObjects.findIndex((e) => e.academicYearStart == y.year)
+            while(nextOfYear !== -1){
+                countRemoved++
+                courseObjects.splice(nextOfYear, 1)
+                nextOfYear = courseObjects.findIndex((e) => e.academicYearStart == y.year)
+            }
+        }
+    };
+    console.log('Deleted ' + countDeleted + ' courses')
+    console.log("Removed " + countRemoved + " courses with incorrect year from the incoming dataset.")
     
     // Send the new courses to the database
     console.log("Sending data to database...")
-    CourseSection.bulkSave(courseObjects)
+    await CourseSection.bulkSave(courseObjects)
 
     /* DEBUG: instead of bulksave, send each course individually so that the
        bulk printing of ids doesn't push the error off the screen */
@@ -67,12 +86,12 @@ async function fetchCourseData(){
     console.log("Successfully sent all courses.")
 }
 
-/* Actually runs the function that fetches the course data */
-// fetchCourseData()
+/* Actually runs the function that fetches the course data. Can be put anywhere */
+fetchCourseData()
 
 // Given a json object representing a course with the fields present in the data
 // recieved from WPI, creates a CourseSection object
-function createCourseSection(course){
+function createCourseSection(course, yearcounts){
     // PARSE NAME:
     // course.Course_Section is in format 'CS 4241-A01-X - Webware'
     // Split on hyphen surrounded by spaces to get 'CS 4241-A01-X', 'Webware'
@@ -95,13 +114,31 @@ function createCourseSection(course){
     }
 
     // FIND FULL ACADEMIC YEAR:
-    const termLetter = course.Starting_Academic_Period_Type.charAt(0)
+    let termLetter = course.Starting_Academic_Period_Type.charAt(0)
+    // Add number to "E1" or "E2"
+    if(course.termLetter == 'E'){
+        termLetter += course.Starting_Academic_Period_Type.charAt(1)
+    }
+    // Convert "Summer" to "E"
+    if(course.Starting_Academic_Period_Type == 'Summer'){
+        termLetter == E
+    }
     let startYear = Number(course.Offering_Period.substring(0,4))
     let endYear = startYear + 1
     if(termLetter != 'A' && termLetter != 'B' && termLetter != 'F'){
-        // termletter == C, D, E, S
+        // termletter == C, D, E, S, G
         startYear--
         endYear--
+    }
+
+    // Add the year of this item to the year counts
+    const yearIndex = yearcounts.findIndex((e) => e.year == startYear)
+    // console.log(startYear + ' at '+ yearIndex)
+    if(yearIndex !== -1){
+        yearcounts[yearIndex].count++
+    }
+    else{
+        yearcounts.push({year: startYear, count: 1})
     }
 
     // PARSE MEETING DAYS
