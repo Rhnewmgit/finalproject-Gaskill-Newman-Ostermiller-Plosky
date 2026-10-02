@@ -2,7 +2,7 @@ import express from "express"
 import { join } from "path"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
-import busboy from "busboy"
+import busboy from "busboy";
 
 import { courseRoutes } from "./courses.js"
 import { fetchCourseData } from "./fetchCourseData.js";
