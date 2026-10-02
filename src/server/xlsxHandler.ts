@@ -72,7 +72,7 @@ function userCourseToDBTuple(userCourse: UserCourse): CourseDBTuple {
     const code = codeSection?.[0];
     const section = codeSection?.[1];
     const term = section?.charAt(0);
-    const academicYear = userCourse.year - (term === 'A' || term === 'B' || term === 'F' ? 1 : 0);
+    const academicYear = userCourse.year - (term === 'A' || term === 'B' || term === 'F' ? 0 : 1);
     return {
         code,
         section,
