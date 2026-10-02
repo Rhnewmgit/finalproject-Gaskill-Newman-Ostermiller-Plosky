@@ -25,47 +25,22 @@ async function fetchCourseData(){
     let url = 'https://courselistings.wpi.edu/assets/prod-data.json'
     const response = await fetch(url)
     const data = await response.json()
-    const courselist = data.Report_Entry
-    // TODO: remove all courses for the current year
-    courselist.forEach(course => {
-        createCourseSection(course)
-        // TODO: ADD COURSE TO DB
+    const courseObjects = []
+    // TODO: remove all courses for the current year from the database
+    data.Report_Entry.forEach(course => {
+        courseObjects.push(createCourseSection(course))
     });
-
+    // Print a selection of courses
+    console.log(courseObjects[1]) // Random selection
+    console.log(courseObjects[155]) // Random selection
+    console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
+    console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
+    console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
+    console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
+    // TODO: add the new courses to the database
+    // mongoose.COLLECTION.insertMany(courseObjects)
 }
-// fetchCourseData()
-
-// Test data
-let course = {
-    Course_Section_Start_Date: '2026-10-19',
-    CF_LRV_Cluster_Ref_ID: '',
-    Student_Course_Section_Cluster: '',
-    Meeting_Patterns: 'M-T-R-F | 9:00 PM - 9:50 AM',
-    Course_Title: 'AB 1532 - Elementary Arabic II',
-    Locations: 'Olin Hall 126',
-    Instructional_Format: 'Lecture',
-    Waitlist_Waitlist_Capacity: '0/10',
-    Course_Description: '<p>Cat. I<br /><br />This course continues students’ exposure to and development of Modern Standard Arabic and Darija, the Arabic dialect spoken in Morocco; it is for students who can read and write using the Arabic script but have very basic understanding of vocabulary and syntax. New language structures, vocabulary and cultural concepts will be presented in communicative activities/materials in class and homework assignments; these activities will focus on receptive (reading &amp; listening) and productive (writing &amp; speaking) skills in Arabic.<br /><br />Recommended background: AB1531 or instructor approval; this course is closed to native<br />speakers of Arabic and heritage speakers except with written permission from the instructor.</p>',
-    Public_Notes: '',
-    Subject: 'Arabic',
-    Delivery_Mode: 'In-Person',
-    Academic_Level: 'Undergraduate',
-    Section_Status: 'Open',
-    Credits: '3',
-    Section_Details: 'Olin Hall 126 | M-T-R-F | 9:00 AM - 9:50 AM',
-    Instructors: 'Mohammed El Hamzaoui',
-    Offering_Period: '2026 Fall B Term',
-    Starting_Academic_Period_Type: 'B Term',
-    Course_Tags: 'Degree Attribute :: Humanities and Arts; Offering Pattern :: Category I',
-    Academic_Units: 'Humanities and Arts Department',
-    Course_Section: 'AB 1532-B01 - Elementary Arabic II',
-    Enrolled_Capacity: '13/25',
-    Course_Section_End_Date: '2026-12-11',
-    Meeting_Day_Patterns: 'M-T-R-F',
-    Course_Section_Owner: 'Humanities and Arts Department'
-    }
-const courseSection = createCourseSection(course)
-console.log(courseSection)
+fetchCourseData()
 
 // Given a json object representing a course with the fields present in the data
 // recieved from WPI, creates a CourseSection object
@@ -93,41 +68,47 @@ function createCourseSection(course){
 
     // PARSE MEETING DAYS
     const meetingDays = []
-    if(course.Meeting_Day_Patterns.indexOf('M') !== -1){
-        meetingDays.push(0)
-    }
-    if(course.Meeting_Day_Patterns.indexOf('T') !== -1){
-        meetingDays.push(1)
-    }
-    
-    if(course.Meeting_Day_Patterns.indexOf('W') !== -1){
-        meetingDays.push(2)
-    }
-    
-    if(course.Meeting_Day_Patterns.indexOf('R') !== -1){
-        meetingDays.push(3)
-    }
-    
-    if(course.Meeting_Day_Patterns.indexOf('F') !== -1){
-        meetingDays.push(4)
-    }
-    
-    if(course.Meeting_Day_Patterns.indexOf('S') !== -1){
-        meetingDays.push(5)
-    }
-    
-    if(course.Meeting_Day_Patterns.indexOf('U') !== -1){
-        meetingDays.push(6)
+    // If the class is asynchronous, no meeting days
+    if(course.Locations !== "Online-asynchronous" && course.Meeting_Day_Patterns != ""){
+        // Otherwise, check for each day and push the corresponding numbwe
+        if(course.Meeting_Day_Patterns.indexOf('M') !== -1){
+            meetingDays.push(0)
+        }
+        if(course.Meeting_Day_Patterns.indexOf('T') !== -1){
+            meetingDays.push(1)
+        }
+        if(course.Meeting_Day_Patterns.indexOf('W') !== -1){
+            meetingDays.push(2)
+        }
+        if(course.Meeting_Day_Patterns.indexOf('R') !== -1){
+            meetingDays.push(3)
+        }
+        if(course.Meeting_Day_Patterns.indexOf('F') !== -1){
+            meetingDays.push(4)
+        }
+        if(course.Meeting_Day_Patterns.indexOf('S') !== -1){
+            meetingDays.push(5)
+        }
+        if(course.Meeting_Day_Patterns.indexOf('U') !== -1){
+            meetingDays.push(6)
+        }
     }
 
     // FIND START AND END TIMES
     // course.Meeting_Patterns is in format 'M-T-R-F | 9:00 AM - 9:50 AM'
-    // Split into 'M-T-R-F' (can be discarded) and '9:00 AM - 9:50 AM'
-    const timestring = course.Meeting_Patterns.split(' | ')[1]
-    // Split into '9:00 AM' and '9:50 AM'
-    const times = timestring.split(' - ')
-    const startTime = timeToMinutesPastMidnight(times[0])
-    const endTime = timeToMinutesPastMidnight(times[1])
+    // Split into 'M-T-R-F' (discarded) and '9:00 AM - 9:50 AM'
+    let startTime = -1
+    let endTime = -1
+    // If the class is asynchronous, the start and end times will be -1
+    if(course.Locations !== "Online-asynchronous" && course.Meeting_Patterns != ""){
+        const timestring = course.Meeting_Patterns.split(' | ')[1]
+        // Split into '9:00 AM' and '9:50 AM'
+        const times = timestring.split(' - ')
+        startTime = timeToMinutesPastMidnight(times[0])
+        endTime = timeToMinutesPastMidnight(times[1])
+    }
+
+    course.Instructors.split('; ')
 
     // MAKE EVERYTHING INTO AN OBJECT
     const courseObject: CourseSection = {
@@ -139,14 +120,19 @@ function createCourseSection(course){
         academicYearStart:startYear,
         academicYearEnd:endYear,
         meetingDays:meetingDays,
-        startTime:startTime,
-        endTime:endTime,
         professors:course.Instructors.split('; '),
         location:course.Locations
+    }
+    // Only add times if they exist
+    if(startTime != -1){
+        courseObject.startTime = startTime
+        courseObject.endTime = endTime
     }
     return courseObject
 }
 
+// Given a 12h time formatted as a string, e.g. "9:20 AM", returns the time as
+// minutes from midnight
 function timeToMinutesPastMidnight(timestring){
     const parts = timestring.split(':')
     const hour = Number(parts[0])
