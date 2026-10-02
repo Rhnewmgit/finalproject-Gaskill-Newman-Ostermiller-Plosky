@@ -3,40 +3,29 @@ html {
 }
 
 .schedule {
-    --height-per-minute: 1.5px;
-    --height-per-hour: calc(var(--height-per-minute) * 60);
-    width: 100%;
-    border-collapse: collapse;
+    display: grid;
 
-    tbody tr {
-        height: var(--height-per-hour);
+    div {
+        padding: 5px;
     }
 
-    td, th {
-        width: 18%;
-        --width: 18%;
-        border: solid 1px black;
-        box-sizing: border-box;
-
-        &:not(:first-child) {
-            vertical-align: top;
-        }
-
-        div {
-            overflow: clip;
-            position: absolute;
-            background-color: #ddd;
-            width: calc(var(--width) - 6px);
-            box-sizing: border-box;
-            padding: 5px;
-
-            p {
-                margin: 0.5em 0;
-            }
-        }
+    .day-label, .time-label {
+        font-weight: bold;
+        text-align: center;
     }
 
-    th:first-child {
-        width: 10%;
+    .header-stripe {
+        background-color: #ccc;
+        grid-row: 1;
+        grid-column: 1 / 7;
+    }
+
+    .time-stripe {
+        background-color: #eee;
+    }
+
+    .course-section {
+        margin: 2px;
+        background-color: #ddd;
     }
 }

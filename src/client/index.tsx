@@ -1,7 +1,6 @@
 import { render } from "preact"
-import { useState } from "preact/hooks"
 
-import { Schedule } from "./Schedule";
+import { Schedule } from "./Schedule.js";
 
 function App() {
 
