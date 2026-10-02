@@ -3,8 +3,6 @@ import { render } from "preact"
 import { Schedule } from "./Schedule.js";
 
 function App() {
-    const [count, setCount] = useState(0);
-
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
         const file = input.files?.[0];
