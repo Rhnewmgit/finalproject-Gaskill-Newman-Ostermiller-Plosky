@@ -89,7 +89,12 @@ const userSchema = new Schema({
         type: Number,
         min: 0 // Zero indicates that the token has been force-expired, ex. user manually signs out
     },
-    courses: [Types.ObjectId]
+    courses: [{
+        required: true,
+        code: String, //  ex. "CS 4241"
+        section: String, // ex. "A01"
+        academicYear: Number, // Year - 1 for terms excluding A, B, and AB
+    }]
 })
 
 export type UserDocument = InferSchemaType<typeof userSchema.obj>;
