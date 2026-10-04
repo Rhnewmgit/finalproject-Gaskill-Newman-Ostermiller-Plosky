@@ -10,7 +10,7 @@ function App() {
         if (file) {
             const formData = new FormData();
             formData.append("file", file);
-            await fetch("/courseFile", {
+            await fetch("/api/courses", {
                 method: 'POST',
                 body: formData,
             });
@@ -21,7 +21,6 @@ function App() {
         <Schedule user="6abec107e87c336129be6ac2" />
         <ScheduleCanvas user="6abec107e87c336129be6ac2" />
         <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
-        <Schedule user="6abec107e87c336129be6ac2" />
     </>
 }
 
