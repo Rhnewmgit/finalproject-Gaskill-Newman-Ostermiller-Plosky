@@ -10,12 +10,14 @@ export type User = {
     }[]
 }
 
+export type Term = "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "S" | "E" | "G";
+
 export type CourseSection = {
     type: string;
     name: string;
     code: string;
     section: string;
-    term: "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "S" | "E" | "G";
+    term: Term;
     academicYearStart: number;
     academicYearEnd: number;
     meetingDays: number[];
