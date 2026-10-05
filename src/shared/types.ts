@@ -3,15 +3,21 @@ export type User = {
     password: string
     token: string
     tokenExpiry: number
-    courses: string[]
+    courses: {
+        code: string,
+        section: string,
+        academicYear: number
+    }[]
 }
+
+export type Term = "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "S" | "E" | "G";
 
 export type CourseSection = {
     type: string;
     name: string;
     code: string;
     section: string;
-    term: "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "S" | "E";
+    term: Term;
     academicYearStart: number;
     academicYearEnd: number;
     meetingDays: number[];
@@ -19,4 +25,19 @@ export type CourseSection = {
     startTime?: number;
     endTime?: number;
     location?: string;
+}
+
+export type CourseListingsCourseSection = {
+    "Course_Section_Start_Date": string,
+    "Meeting_Patterns": string,
+    "Course_Title": string,
+    "Locations": string,
+    "Instructional_Format": string,
+    "Section_Details": string,
+    "Instructors": string,
+    "Offering_Period": string,
+    "Starting_Academic_Period_Type": string,
+    "Course_Section": string,
+    "Course_Section_End_Date": string,
+    "Meeting_Day_Patterns": string,
 }

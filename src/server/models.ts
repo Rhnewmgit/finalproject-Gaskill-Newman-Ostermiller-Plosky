@@ -20,7 +20,7 @@ const courseSectionSchema = new Schema({
     term: {
         required: true,
         type: String, // ex. "A"
-        enum: ["A", "B", "C", "D", "E1", "E2", "F", "S", "E"] // "F" is for fall, "S" is for spring, "E" is for full summer
+        enum: ["A", "B", "C", "D", "E1", "E2", "F", "S", "E", "G"] // "F" is for fall, "S" is for spring, "E" is for full summer
     },
     academicYearStart: {
         required: true,
@@ -89,7 +89,20 @@ const userSchema = new Schema({
         type: Number,
         min: 0 // Zero indicates that the token has been force-expired, ex. user manually signs out
     },
-    courses: [Types.ObjectId]
+    courses: [{
+        code: {
+            type: String, //  ex. "CS 4241",
+            required: true
+        },
+        section: {
+            type: String, // ex. "A01"
+            required: true
+        },
+        academicYear: {
+            type: Number, // Year - 1 for terms excluding A, B, and AB
+            required: true
+        }
+    }]
 })
 
 export type UserDocument = InferSchemaType<typeof userSchema.obj>;

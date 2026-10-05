@@ -17,6 +17,7 @@
     "express": "^5.2.1",
     "mongoose": "^9.10.2",
     "preact": "^10.29.8",
+    "node-fetch": "^3.3.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "scripts": {

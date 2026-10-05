@@ -1,17 +1,19 @@
 import { useEffect, useState } from "preact/hooks";
-import { CourseSection } from "../shared/types"
-import { mostExtremeTimes, formatTime } from "../shared/util"
+import { CourseSection, Term } from "../shared/types"
+import { mostExtremeTimes, formatTime, filterCourseSections } from "../shared/util"
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-export function Schedule(props: {user: string}) {
+export function Schedule(props: {user: string, academicYear: number, term: Term}) {
     const [sections, setSections] = useState<CourseSection[]>([]);
 
     useEffect(() => {
         fetch("/api/courses/" + props.user).then(r => {
             return r.json();
-        }).then(setSections);
-    }, [props.user]);
+        }).then(sections => {
+            setSections(filterCourseSections(sections, props.academicYear, props.term))
+        });
+    }, [props.user, props.academicYear, props.term]);
 
     const extremes = mostExtremeTimes(sections);
     const hours: number[] = [];
