@@ -38,8 +38,8 @@ export function authRoutes(app:express.Express){
             })
         }
         
-        const username = req.body.username
-        const password = req.body.password
+        const username : string = req.body.username
+        const password : string = req.body.password
         //if username already exists
         const existingUser =  await User.findOne({username}).exec()
         if(existingUser){
@@ -52,7 +52,7 @@ export function authRoutes(app:express.Express){
         if (!req.body.password2 || req.body.password2!== password){ 
             res.status(400).json({
                 success : false,
-                error : `User with username ${username} already exists!`
+                error : "Passwords do not match"
             })
             return
         }
@@ -79,8 +79,8 @@ export function authRoutes(app:express.Express){
         await newUser.save()
         if(req.session) req.session.token = newUser.token
         res.status(200).json({
-                success : true,
-                token : newUser.token
+            success : true,
+            user : newUser._id
         })
     })
 
@@ -119,7 +119,7 @@ export function authRoutes(app:express.Express){
             }
             res.status(200).json({
                 success : true,
-                token : user.token
+                user : user._id
             })
         }
     })
