@@ -1,5 +1,6 @@
 html {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
 }
 
 .schedule {
@@ -28,4 +29,39 @@ html {
         margin: 2px;
         background-color: #ddd;
     }
+}
+
+.margin{
+    margin-left: 1dvw;
+    margin-top:2dvh;
+}
+.login-field{
+    display: block;
+    padding: 0.3rem 0.5rem;
+    width: 15rem;
+}
+.submit{
+    padding: 0.3rem 0.5rem;
+    display: block;
+    border-radius: 5px;
+    font-weight: bold;
+    border:2px solid #2d2dff;
+    background-color: #2d2dff;
+    color:white;
+    margin-top: 2dvh;
+}
+
+.fake-link{
+    display: inline;
+    border:none;
+    background:none;
+    color: #0000EE;
+    font-size: 16px;
+    margin-top:2dvh;
+}
+.fake-link:hover{
+    text-decoration: underline;
+}
+.inline{
+    display: inline;
 }

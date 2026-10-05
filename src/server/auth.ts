@@ -21,7 +21,7 @@ export function authRoutes(app:express.Express){
         //if user exists and token is still valid, is logged in
         if(user){
             //if so send the user
-            return res.json({success : true, loginStatus : true, user:user})
+            return res.json({success : true, loginStatus : true, user:user._id.toString()})
         }
         else{
             return res.json({success : true, loginStatus : false, user:null})
@@ -37,7 +37,8 @@ export function authRoutes(app:express.Express){
                 error : "Can't sign up when logged in already"
             })
         }
-        
+        console.log("Sign-up data sent")
+        console.log(req.body)
         const username : string = req.body.username
         const password : string = req.body.password
         //if username already exists
@@ -61,10 +62,11 @@ export function authRoutes(app:express.Express){
         //token is random mix of lowercase letters and number
         const newUser = new User({
             username: username,
-            password: hash(password, 10),
+            password: await hash(password, 10),
             token: (Math.random()).toString(36).slice(2),
             tokenExpiry: Date.now() + 86400000
         })
+        console.log(newUser)
         try{
             //check if username and password match what's allowed in schema
             await newUser.validate()
@@ -77,6 +79,7 @@ export function authRoutes(app:express.Express){
             return
         }
         await newUser.save()
+        console.log(newUser._id)
         if(req.session) req.session.token = newUser.token
         res.status(200).json({
             success : true,
@@ -94,7 +97,7 @@ export function authRoutes(app:express.Express){
             })
         }
         const username = req.body.username
-        const password = req.body.username
+        const password = req.body.password
         const user = await User.findOne({username : username})
         if(!user){
             res.status(404).json({
@@ -104,6 +107,8 @@ export function authRoutes(app:express.Express){
         }
         //check if password is correct
         else if (!(await compare(password, user.password))){
+            console.log(password)
+            console.log(user.password)
             res.status(404).json({
                 success : false,
                 error : "Incorrect password"
@@ -117,9 +122,10 @@ export function authRoutes(app:express.Express){
             if(req.session){
                 req.session.token = user.token;
             }
+            console.log(user._id.toString())
             res.status(200).json({
                 success : true,
-                user : user._id
+                user : user._id.toString()
             })
         }
     })
@@ -129,7 +135,7 @@ export function authRoutes(app:express.Express){
         if(user){
             user.tokenExpiry = 0;
             await user.save();
-            if(req.session?.token != undefined){
+            if(req.session?.token !== undefined){
                 req.session.token = null;
             }
             res.status(200).json({success : true})

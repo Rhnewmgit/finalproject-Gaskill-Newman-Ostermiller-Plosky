@@ -5,6 +5,7 @@ import { Schedule } from "./Schedule.js";
 import { ScheduleCanvas } from "./ScheduleCanvas.jsx";
 import { AuthForm } from "./AuthForm.js"
 import { Term } from "../shared/types.js";
+import { LogoutButton } from "./LogoutButton.jsx";
 
 function App() {
     const [term, setTerm] = useState<Term>("A");
@@ -45,6 +46,7 @@ function App() {
                 <option value="E2">E2 term</option>
                 <option value="E">Summer term</option>
             </select>
+            <LogoutButton onLogout={setUser}/>
             <Schedule user={user} term={term} academicYear={2026} />
             <ScheduleCanvas user={user} term={term} academicYear={2026} />
             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>

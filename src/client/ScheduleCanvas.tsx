@@ -47,7 +47,7 @@ export function ScheduleCanvas(props: {user: string, academicYear: number, term:
         ctx.font = "bold 14px Arial";
         ctx.fillStyle = "#ccc";
         ctx.fillRect(0, 0, canvasWidth, 25);
-        ctx.fillStyle = "#000";
+        ctx.fillStyle = "#00f0";
         days.forEach((day, dayIndex) => {
             ctx.fillText(day, timeColumnWidth + dayColumnWidth * dayIndex + (dayColumnWidth / 2), 5);
         });
