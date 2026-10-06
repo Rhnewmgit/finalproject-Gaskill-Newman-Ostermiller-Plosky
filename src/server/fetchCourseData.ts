@@ -117,12 +117,12 @@ function createCourseSection(course: CourseListingsCourseSection, yearcounts: { 
         // This should be three or four items: the location, the days, the time range, and optionally the date range
 
         const weekdayLetters = ['M', 'T', 'W', 'R', 'F', 'S', 'U']
-        const meetingDays = []
+        const meetingDays: number[] = []
         // If the class is asynchronous, no meeting days
         if (parts[1] && parts[1] !== "Online-asynchronous") {
             // Otherwise, check for each day and push the corresponding number
-            weekdayLetters.forEach((letter, number) =>{
-                if(parts[1].includes(letter)){
+            weekdayLetters.forEach((letter, number) => {
+                if (parts[1].includes(letter)) {
                     meetingDays.push(number)
                 }
             });

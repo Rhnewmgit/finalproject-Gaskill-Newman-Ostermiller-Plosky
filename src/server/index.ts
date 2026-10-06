@@ -2,11 +2,9 @@ import express from "express"
 import { join } from "path"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
-import busboy from "busboy";
 
 import { courseRoutes } from "./courses.js"
 import { fetchCourseData } from "./fetchCourseData.js";
-import parseXLSX from "./xlsxHandler.js"
 import cookieSession from 'cookie-session';
 import { authRoutes } from "./auth.js";
 
@@ -22,7 +20,7 @@ await mongoose.connect(uri)
 
 app.use(express.static(join(import.meta.dirname, "../../static")))
 app.use(express.json());
-app.use( cookieSession({
+app.use(cookieSession({
   name: 'session',
   //made using randomkeygen.com
   keys: ['xt#1dw(&2gf7fgYw', '%*7URk{mAGmUA3Jg']
@@ -31,7 +29,7 @@ authRoutes(app);
 courseRoutes(app);
 
 app.get("/{*a}", (req: express.Request, res: express.Response) => {
-	res.sendFile(join(import.meta.dirname, "../client/index.html"))
+  res.sendFile(join(import.meta.dirname, "../client/index.html"))
 })
 
 /* Actually runs the function that fetches the course data. Can be put anywhere */

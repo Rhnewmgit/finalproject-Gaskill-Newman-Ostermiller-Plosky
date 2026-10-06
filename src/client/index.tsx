@@ -24,10 +24,11 @@ function App() {
         if (file) {
             const formData = new FormData();
             formData.append("file", file);
-            await fetch("/api/courses", {
+            const response = await fetch("/api/courses", {
                 method: 'POST',
                 body: formData,
             });
+            // const arr = await response.json();
         }
     }
     if(!user){
