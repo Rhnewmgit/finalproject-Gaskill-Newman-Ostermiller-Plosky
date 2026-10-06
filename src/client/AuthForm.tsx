@@ -36,12 +36,12 @@ export function AuthForm(props : {onLogin: Function}){
             <input class='login-field' type='text' name='username'/>
 
             <label class='login-field' for='password'>Password: </label>
-            <input class='login-field' type='text' name='password'/>
+            <input class='login-field' type='password' name='password'/>
 
             {!isLoginMode && 
             <>
                 <label class='login-field' for='password2'>Re-enter password: </label>
-                <input class='login-field' type='text' name='password2'/>
+                <input class='login-field' type='password' name='password2'/>
             </>}
             <button class='submit' type="submit">{isLoginMode? 'Log In' : 'Sign Up'}</button>
         </form>
