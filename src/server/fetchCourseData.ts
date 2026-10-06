@@ -1,6 +1,6 @@
 // Updates the course data in the database for the current year based on the
 
-import { CourseListingsCourseSection } from "../shared/types.js"
+import { CourseListingsCourseSection, CourseMeetingPattern } from "../shared/types.js"
 import { CourseSection, CourseSectionDocument } from "./models.js"
 
 // data provided from WPI's server
@@ -118,47 +118,50 @@ function createCourseSection(course: CourseListingsCourseSection, yearcounts: { 
         yearcounts.push({ year: startYear, count: 1 })
     }
 
-    // PARSE MEETING DAYS
-    const meetingDays = []
-    // If the class is asynchronous, no meeting days
-    if (course.Locations !== "Online-asynchronous" && course.Meeting_Day_Patterns != "") {
-        // Otherwise, check for each day and push the corresponding numbwe
-        if (course.Meeting_Day_Patterns.indexOf('M') !== -1) {
-            meetingDays.push(0)
-        }
-        if (course.Meeting_Day_Patterns.indexOf('T') !== -1) {
-            meetingDays.push(1)
-        }
-        if (course.Meeting_Day_Patterns.indexOf('W') !== -1) {
-            meetingDays.push(2)
-        }
-        if (course.Meeting_Day_Patterns.indexOf('R') !== -1) {
-            meetingDays.push(3)
-        }
-        if (course.Meeting_Day_Patterns.indexOf('F') !== -1) {
-            meetingDays.push(4)
-        }
-        if (course.Meeting_Day_Patterns.indexOf('S') !== -1) {
-            meetingDays.push(5)
-        }
-        if (course.Meeting_Day_Patterns.indexOf('U') !== -1) {
-            meetingDays.push(6)
-        }
-    }
+    const meetingPatterns: CourseMeetingPattern[] = [];
+    course.Section_Details.split(";").forEach(meeting => {
+        const parts = meeting.split(" | ");
+        // This should be three or four items: the location, the days, the time range, and optionally the date range
 
-    // FIND START AND END TIMES
-    // course.Meeting_Patterns is in format 'M-T-R-F | 9:00 AM - 9:50 AM'
-    // Split into 'M-T-R-F' (discarded) and '9:00 AM - 9:50 AM'
-    let startTime = -1
-    let endTime = -1
-    // If the class is asynchronous, the start and end times will be -1
-    if (course.Locations !== "Online-asynchronous" && course.Meeting_Patterns != "") {
-        const timestring = course.Meeting_Patterns.split(' | ')[1]
-        // Split into '9:00 AM' and '9:50 AM'
-        const times = timestring.split(' - ')
-        startTime = timeToMinutesPastMidnight(times[0])
-        endTime = timeToMinutesPastMidnight(times[1])
-    }
+        const meetingDays = []
+        // If the class is asynchronous, no meeting days
+        if (parts[1] && parts[1] !== "Online-asynchronous") {
+            // Otherwise, check for each day and push the corresponding numbwe
+            if (parts[1].includes('M')) {
+                meetingDays.push(0)
+            }
+            if (parts[1].includes('T')) {
+                meetingDays.push(1)
+            }
+            if (parts[1].includes('W')) {
+                meetingDays.push(2)
+            }
+            if (parts[1].includes('R')) {
+                meetingDays.push(3)
+            }
+            if (parts[1].includes('F')) {
+                meetingDays.push(4)
+            }
+            if (parts[1].includes('S')) {
+                meetingDays.push(5)
+            }
+            if (parts[1].includes('U')) {
+                meetingDays.push(6)
+            }
+        }
+
+        // Add each meeting day
+        meetingDays.forEach(day => {
+            meetingPatterns.push({
+                day: day,
+                startTime: timeToMinutesPastMidnight(parts[2].split(" - ")[0]),
+                endTime: timeToMinutesPastMidnight(parts[2].split(" - ")[1]),
+                startDate: new Date(parts[3] ? parts[3].split(" - ")[0] : course.Course_Section_Start_Date).getTime(),
+                endDate: new Date(parts[3] ? parts[3].split(" - ")[1] : course.Course_Section_End_Date).getTime(),
+                location: parts[0].trim()
+            })
+        })
+    });
 
     // MAKE EVERYTHING INTO AN OBJECT
     const courseObject = new CourseSection({
@@ -169,15 +172,9 @@ function createCourseSection(course: CourseListingsCourseSection, yearcounts: { 
         term: termLetter,
         academicYearStart: startYear,
         academicYearEnd: endYear,
-        meetingDays: meetingDays,
-        professors: course.Instructors.split('; '),
-        location: course.Locations
+        meetings: meetingPatterns,
+        professors: course.Instructors.split('; ')
     });
-    // Only add times if they exist
-    if (startTime != -1) {
-        courseObject.startTime = startTime
-        courseObject.endTime = endTime
-    }
     return courseObject
 }
 

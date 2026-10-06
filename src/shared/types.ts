@@ -12,6 +12,15 @@ export type User = {
 
 export type Term = "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "S" | "E" | "G";
 
+export type CourseMeetingPattern = {
+    day: number,
+    startTime: number,
+    endTime: number,
+    startDate: number,
+    endDate: number,
+    location: string
+};
+
 export type CourseSection = {
     type: string;
     name: string;
@@ -20,11 +29,8 @@ export type CourseSection = {
     term: Term;
     academicYearStart: number;
     academicYearEnd: number;
-    meetingDays: number[];
+    meetings: CourseMeetingPattern[];
     professors: string[];
-    startTime?: number;
-    endTime?: number;
-    location?: string;
 }
 
 export type CourseListingsCourseSection = {

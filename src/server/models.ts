@@ -30,32 +30,42 @@ const courseSectionSchema = new Schema({
         required: true,
         type: Number // ex. 2027
     },
-    meetingDays: {
-        required: true,
+    meetings: {
         type: [{
-            type: Number,
-            min: 0,
-            max: 6
+            day: {
+                type: Number,
+                min: 0,
+                max: 6,
+                required: true
+            }, // ex. 1 for Tuesday
+            startTime: {
+                type: Number,
+                min: 0,
+                max: 1439,
+                required: true
+            }, // Minutes since midnight, ex. 840 for 2:00 PM
+            endTime: {
+                type: Number,
+                min: 0,
+                max: 1439,
+                required: true
+            }, // Minutes since midnight, ex. 950 for 3:50 PM
+            startDate: {
+                type: Number, // Milliseconds since the epoch
+                required: true
+            },
+            endDate: {
+                type: Number, // Milliseconds since the epoch
+                required: true
+            },
+            location: {
+                type: String,
+                required: true
+            } // ex. "Unity Hall 420"
         }],
-        validate: (val: any) => Array.isArray(val) && val.length >= 0 && val.length <= 7
-    }, // ex. [1, 4] for Tuesday and Friday
-    startTime: {
-        type: Number,
-        min: 0,
-        max: 1439,
-        required: false
-    }, // Minutes since midnight, ex. 840 for 2:00 PM
-    endTime: {
-        type: Number,
-        min: 0,
-        max: 1439,
-        required: false
-    }, // Minutes since midnight, ex. 950 for 3:50 PM
-    professors: [String], // ex. ["Charlie Roberts"]
-    location: {
-        type: String,
-        required: false
-    }, // ex. "Unity Hall 420"
+        required: true
+    },
+    professors: [String] // ex. ["Charlie Roberts"]
 })
 
 courseSectionSchema.index({
