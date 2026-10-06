@@ -7,12 +7,18 @@ type Course = {
     year: number
 };
 
+export type CourseDBTuple = {
+    code: String, //  ex. "CS 4241"
+    section: String, // ex. "A01"
+    academicYear: Number, // Year - 1 for terms excluding A, B, and AB
+}
+
 /**
  * 
  * @param file readable stream returned as file from busboy library
  * @returns promise containing an array of Objects representing the user's courses
  */
-export default async function parseXLSX(file: Stream.Readable): Promise<[Course] | undefined> {
+export default async function parseXLSX(file: Stream.Readable): Promise<CourseDBTuple[] | [] | undefined> {
     const workbook = XLSX.read(await buffer(file), { dense: true, nodim: true });
     const sheet1 = workbook.Sheets[workbook.SheetNames[0]];
     const data: any[][] = XLSX.utils.sheet_to_json(sheet1, { header: 1 }); //sheet1["!data"]?.map((row) => row.map((cell) => cell.v));
@@ -20,7 +26,7 @@ export default async function parseXLSX(file: Stream.Readable): Promise<[Course]
         console.log(`Bad data in A4: ${data?.[3]?.[0]}`)
         return;
     }
-    const userCourses: [Course] = [{ section: parseCourseSection(data?.[6][6]), year: normalizeYear(data?.[6][12]) }];
+    const userCourses: UserCourse[] = [{ section: parseCourseSection(data?.[6][6]), year: normalizeYear(data?.[6][12]) }];
     for (let i = 7, secondSem = false; ; i++) {
         const dataRow = data?.[i];
         if (dataRow.length < 14) {
