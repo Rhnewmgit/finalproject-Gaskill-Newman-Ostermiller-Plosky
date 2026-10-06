@@ -2,9 +2,9 @@ import express from "express"
 import { CourseSection, User } from "./models.js"
 import { Types } from "mongoose";
 import busboy from "busboy";
-import { parseXLSX, type CourseDBTuple } from "./xlsxHandler.js";
+import parseXLSX from "./xlsxHandler.js";
 
-export function courseRoutes(app: express.Express) {
+export function courseRoutes (app: express.Express) {
     app.get("/api/courses/:user", async (req, res) => {
         const user = await User.findById(req.params.user);
 
@@ -19,7 +19,7 @@ export function courseRoutes(app: express.Express) {
             res.status(200).json({});
             return;
         }
-
+        
         const courseSections = await CourseSection.find({
             $or: user.courses.map(course => {
                 return {
@@ -36,7 +36,6 @@ export function courseRoutes(app: express.Express) {
     // Handles receiving the .xlsx file from the user
     app.post("/api/courses", (req: express.Request, res: express.Response) => {
         const bb = busboy({ headers: req.headers, });
-        let userCourses: CourseDBTuple[];
         bb.on('file', async (name, file, info) => {
             const { filename, encoding, mimeType } = info;
             console.log(
@@ -49,8 +48,8 @@ export function courseRoutes(app: express.Express) {
             // 	console.log(`Improper sheeet type given; filename of ${filename} or mimeType ${mimeType} was not accepted`);
             // 	return;
             // }
-            userCourses = await parseXLSX(file);
-            // console.log(userCourses);
+            const userCourses = await parseXLSX(file);
+            console.log(userCourses);
 
         });
 

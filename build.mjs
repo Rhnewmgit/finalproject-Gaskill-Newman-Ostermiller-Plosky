@@ -24,7 +24,7 @@ await esbuild.build({
     bundle: true,
     minify: true,
     sourcemap: true,
-    external: ["express", "mongoose", "fs", "dotenv", "busboy", "xlsx", "stream"],
+    external: ["express", "mongoose", "fs", "dotenv", "busboy", "xlsx", "stream", "node-fetch", "cookie-session"],
     format: "esm",
     outdir: "src/server"
 });

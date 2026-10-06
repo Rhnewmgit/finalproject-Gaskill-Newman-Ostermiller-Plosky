@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import { InferSchemaType, model, Schema, Types } from "mongoose";
 
 const courseSectionSchema = new Schema({
     name: {
@@ -20,7 +20,7 @@ const courseSectionSchema = new Schema({
     term: {
         required: true,
         type: String, // ex. "A"
-        enum: ["A", "B", "C", "D", "E1", "E2", "F", "S", "E"] // "F" is for fall, "S" is for spring, "E" is for full summer
+        enum: ["A", "B", "C", "D", "E1", "E2", "F", "S", "E", "G"] // "F" is for fall, "S" is for spring, "E" is for full summer
     },
     academicYearStart: {
         required: true,
@@ -30,35 +30,54 @@ const courseSectionSchema = new Schema({
         required: true,
         type: Number // ex. 2027
     },
-    meetingDays: {
-        required: true,
+    meetings: {
         type: [{
-            type: Number,
-            min: 0,
-            max: 4
+            day: {
+                type: Number,
+                min: 0,
+                max: 6,
+                required: true
+            }, // ex. 1 for Tuesday
+            startTime: {
+                type: Number,
+                min: 0,
+                max: 1439,
+                required: true
+            }, // Minutes since midnight, ex. 840 for 2:00 PM
+            endTime: {
+                type: Number,
+                min: 0,
+                max: 1439,
+                required: true
+            }, // Minutes since midnight, ex. 950 for 3:50 PM
+            startDate: {
+                type: Number, // Milliseconds since the epoch
+                required: true
+            },
+            endDate: {
+                type: Number, // Milliseconds since the epoch
+                required: true
+            },
+            location: {
+                type: String,
+                required: true
+            } // ex. "Unity Hall 420"
         }],
-        validate: (val: any) => Array.isArray(val) && val.length >= 0 && val.length <= 5
-    }, // ex. [1, 4] for Tuesday and Friday
-    startTime: {
-        type: Number,
-        min: 0,
-        max: 1439,
-        required: false
-    }, // Minutes since midnight, ex. 840 for 2:00 PM
-    endTime: {
-        type: Number,
-        min: 0,
-        max: 1439,
-        required: false
-    }, // Minutes since midnight, ex. 950 for 3:50 PM
-    professors: [String], // ex. ["Charlie Roberts"]
-    location: {
-        type: String,
-        required: false
-    }, // ex. "Unity Hall 420"
+        required: true
+    },
+    professors: [String] // ex. ["Charlie Roberts"]
 })
 
-export const CourseSection = model("CourseSection", courseSectionSchema);
+courseSectionSchema.index({
+    code: 1,
+    section: 1,
+    academicYearStart: 1
+}, {
+    unique: true
+}) // The combination of course code and course section should be unique
+
+export type CourseSectionDocument = InferSchemaType<typeof courseSectionSchema>;
+export const CourseSection = model<CourseSectionDocument>("CourseSection", courseSectionSchema);
 
 const userSchema = new Schema({
     username: {
@@ -80,7 +99,21 @@ const userSchema = new Schema({
         type: Number,
         min: 0 // Zero indicates that the token has been force-expired, ex. user manually signs out
     },
-    courses: [Types.ObjectId]
+    courses: [{
+        code: {
+            type: String, //  ex. "CS 4241",
+            required: true
+        },
+        section: {
+            type: String, // ex. "A01"
+            required: true
+        },
+        academicYear: {
+            type: Number, // Year - 1 for terms excluding A, B, and AB
+            required: true
+        }
+    }]
 })
 
+export type UserDocument = InferSchemaType<typeof userSchema.obj>;
 export const User = model("User", userSchema);

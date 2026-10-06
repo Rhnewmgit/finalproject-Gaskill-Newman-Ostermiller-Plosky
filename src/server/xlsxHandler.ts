@@ -2,12 +2,12 @@ import XLSX from "xlsx";
 import { buffer } from "stream/consumers"
 import Stream from "stream"
 
-type Course = {
-    section: string,
-    year: number
+type UserCourse = {
+    section: string, // ex. "CS 4342-A01"
+    year: number // ex 2026
 };
 
-export type CourseDBTuple = {
+type CourseDBTuple = {
     code: String, //  ex. "CS 4241"
     section: String, // ex. "A01"
     academicYear: Number, // Year - 1 for terms excluding A, B, and AB
@@ -26,7 +26,7 @@ export default async function parseXLSX(file: Stream.Readable): Promise<CourseDB
         console.log(`Bad data in A4: ${data?.[3]?.[0]}`)
         return;
     }
-    const userCourses: UserCourse[] = [{ section: parseCourseSection(data?.[6][6]), year: normalizeYear(data?.[6][12]) }];
+    const userCourses: UserCourse[] | [] = [{ section: parseCourseSection(data?.[6][6]), year: normalizeYear(data?.[6][12]) }];
     for (let i = 7, secondSem = false; ; i++) {
         const dataRow = data?.[i];
         if (dataRow.length < 14) {
@@ -49,7 +49,7 @@ export default async function parseXLSX(file: Stream.Readable): Promise<CourseDB
         // console.log(userCourses.at(userCourses.length - 1));
     }
     // console.log(userCourses);
-    return userCourses;
+    return userCourses.map((userCourse: UserCourse) => userCourseToDBTuple(userCourse));
 }
 
 function parseCourseSection(section: string): string {
@@ -62,4 +62,20 @@ function parseCourseSection(section: string): string {
 
 function normalizeYear(raw: number): number {
     return Math.floor((raw / 365) + 1900);
+}
+
+/**
+ * Converts a userCourse object to a CourseDBTuple
+ */
+function userCourseToDBTuple(userCourse: UserCourse): CourseDBTuple {
+    const codeSection = userCourse.section.split("-");
+    const code = codeSection?.[0];
+    const section = codeSection?.[1];
+    const term = section?.charAt(0);
+    const academicYear = userCourse.year - (term === 'A' || term === 'B' || term === 'F' ? 0 : 1);
+    return {
+        code,
+        section,
+        academicYear,
+    };
 }
