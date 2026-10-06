@@ -14,6 +14,11 @@ export function courseRoutes (app: express.Express) {
             });
             return;
         }
+
+        if (!user.courses.length) {
+            res.status(200).json({});
+            return;
+        }
         
         const courseSections = await CourseSection.find({
             $or: user.courses.map(course => {
