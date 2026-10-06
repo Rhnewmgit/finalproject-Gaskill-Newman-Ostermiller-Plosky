@@ -47,19 +47,15 @@ export function Schedule(props: {user: string, academicYear: number, term: Term}
         })}
         {sections.map(section => {
             return <>
-                {section.meetingDays.map(day => {
-                    if (!section.startTime || !section.endTime) {
-                        return;
-                    }
-
+                {section.meetings.map(meeting => {
                     return <div class="course-section" style={{
-                        gridRow: timeToRow(section.startTime, extremes.earliest) + " / " + timeToRow(section.endTime, extremes.earliest),
-                        gridColumn: day + 2
+                        gridRow: timeToRow(meeting.startTime, extremes.earliest) + " / " + timeToRow(meeting.endTime, extremes.earliest),
+                        gridColumn: meeting.day + 2
                     }}>
                         <p>{section.name}</p>
                         <p>{section.type}</p>
                         <p>{section.professors.join(", ")}</p>
-                        <p>{section.location}</p>
+                        <p>{meeting.location}</p>
                     </div>
                 })}
             </>

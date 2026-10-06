@@ -5,43 +5,18 @@ export function mostExtremeTimes (sections: CourseSection[]) {
     let latest = 0;
 
     sections.forEach(section => {
-        if (section.startTime && section.startTime < earliest) {
-            earliest = section.startTime;
-        }
+        section.meetings.forEach(meeting => {
+            if (meeting.startTime && meeting.startTime < earliest) {
+                earliest = meeting.startTime;
+            }
 
-        if (section.endTime && section.endTime > latest) {
-            latest = section.endTime;
-        }
-    })
-
-    return { earliest: Math.min(earliest, latest), latest: Math.max(earliest, latest) }
-}
-
-export function formatSchedule (sections: CourseSection[]) {
-    const schedule: CourseSection[][][] = [];
-
-    for (let h = 0; h < 24; h++) {
-        const hour: CourseSection[][] = [];
-        for (let d = 0; d < 5; d++) {
-            hour.push([]);
-        }
-
-        schedule.push(hour);
-    }
-
-    sections.forEach(section => {
-        if (!section.startTime || !section.startTime) {
-            return;
-        }
-
-        const hour = Math.floor(section.startTime / 60);
-
-        section.meetingDays.forEach(day => {
-            schedule[hour][day].push(section);
+            if (meeting.endTime && meeting.endTime > latest) {
+                latest = meeting.endTime;
+            }
         })
     })
 
-    return schedule;
+    return { earliest: Math.min(earliest, latest), latest: Math.max(earliest, latest) }
 }
 
 export function formatTime(time: number) {

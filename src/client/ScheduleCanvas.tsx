@@ -63,23 +63,19 @@ export function ScheduleCanvas(props: {user: string, academicYear: number, term:
 
         ctx.font = "14px Arial";
         sections.forEach(section => {
-            section.meetingDays.forEach(day => {
-                if (!section.startTime || !section.endTime) {
-                    return;
-                }
-
-                const x = timeColumnWidth + dayColumnWidth * day;
-                let y = 25 + heightPerMinute * (section.startTime - extremes.earliest);
-                const yEnd = y + heightPerMinute * (section.endTime - section.startTime) - 4;
+            section.meetings.forEach(meeting => {
+                const x = timeColumnWidth + dayColumnWidth * meeting.day;
+                let y = 25 + heightPerMinute * (meeting.startTime - extremes.earliest);
+                const yEnd = y + heightPerMinute * (meeting.endTime - meeting.startTime) - 4;
 
                 ctx.fillStyle = "#ddd";
-                ctx.fillRect(x + 2, y + 2, dayColumnWidth - 4, heightPerMinute * (section.endTime - section.startTime) - 4)
+                ctx.fillRect(x + 2, y + 2, dayColumnWidth - 4, heightPerMinute * (meeting.endTime - meeting.startTime) - 4)
                 ctx.fillStyle = "#000";
                 y += 5;
                 y = wrapText(section.name, x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
                 y = wrapText(section.type, x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
                 y = wrapText(section.professors.join(", "), x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
-                wrapText(section.location || "", x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx);
+                wrapText(meeting.location || "", x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx);
             });
         })
     }, [sections]);
