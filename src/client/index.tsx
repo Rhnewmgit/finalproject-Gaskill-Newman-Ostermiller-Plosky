@@ -1,8 +1,7 @@
 import { render } from "preact"
 import { useEffect, useState } from "preact/hooks";
-
+import { exportScheduleImage } from "./exportScheduleImage.js"
 import { Schedule } from "./Schedule.js";
-import { ScheduleCanvas } from "./ScheduleCanvas.jsx";
 import { AuthForm } from "./AuthForm.js"
 import { Term } from "../shared/types.js";
 import { LogoutButton } from "./LogoutButton.jsx";
@@ -48,7 +47,9 @@ function App() {
             </select>
             <LogoutButton onLogout={setUser}/>
             <Schedule user={user} term={term} academicYear={2026} />
-            <ScheduleCanvas user={user} term={term} academicYear={2026} />
+            <button onClick={async () => {
+                await exportScheduleImage(user, 2026, term);
+            }}>Export Image</button>
             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
         </>
     }
