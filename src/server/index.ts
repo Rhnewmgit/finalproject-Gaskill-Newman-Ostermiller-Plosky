@@ -26,7 +26,7 @@ app.use(express.json());
 app.use( cookieSession({
   name: 'session',
   //made using randomkeygen.com
-  keys: ['xt#1dw(&2gf7fgYw', '%*7URk{mAGmUA3Jg']
+  keys: [process.env.SESSION_KEY_1 as string, process.env.SESSION_KEY_2 as string]
 }))
 authRoutes(app);
 courseRoutes(app);

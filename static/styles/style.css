@@ -65,3 +65,7 @@ html {
 .inline{
     display: inline;
 }
+
+.error{
+    color:red;
+}

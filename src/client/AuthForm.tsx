@@ -53,6 +53,6 @@ export function AuthForm(props : {onLogin: Function}){
         :
             <button class='margin fake-link' type='button' onClick={handleClick}>Return to login page</button>
         }   
-        <p> {errorMsg}</p>
+        <p class='margin error'> {errorMsg}</p>
     </>
 }
