@@ -1,8 +1,7 @@
-// Updates the course data in the database for the current year based on the
-
 import { CourseListingsCourseSection, CourseMeetingPattern } from "../shared/types.js"
 import { CourseSection, CourseSectionDocument } from "./models.js"
 
+// Updates the course data in the database for the current year based on the
 // data provided from WPI's server
 export async function fetchCourseData() {
     // Fetch data
@@ -56,12 +55,6 @@ export async function fetchCourseData() {
     // Send the new courses to the database
     console.log("Sending data to database...")
     await CourseSection.bulkSave(courseObjects as any)
-
-    /* DEBUG: instead of bulksave, send each course individually so that the
-       bulk printing of ids doesn't push the error off the screen */
-    // courseObjects.forEach(element => {
-    //     element.save()
-    // });
 
     console.log("Successfully sent all courses.")
 }
@@ -123,31 +116,16 @@ function createCourseSection(course: CourseListingsCourseSection, yearcounts: { 
         const parts = meeting.split(" | ");
         // This should be three or four items: the location, the days, the time range, and optionally the date range
 
+        const weekdayLetters = ['M', 'T', 'W', 'R', 'F', 'S', 'U']
         const meetingDays = []
         // If the class is asynchronous, no meeting days
         if (parts[1] && parts[1] !== "Online-asynchronous") {
-            // Otherwise, check for each day and push the corresponding numbwe
-            if (parts[1].includes('M')) {
-                meetingDays.push(0)
-            }
-            if (parts[1].includes('T')) {
-                meetingDays.push(1)
-            }
-            if (parts[1].includes('W')) {
-                meetingDays.push(2)
-            }
-            if (parts[1].includes('R')) {
-                meetingDays.push(3)
-            }
-            if (parts[1].includes('F')) {
-                meetingDays.push(4)
-            }
-            if (parts[1].includes('S')) {
-                meetingDays.push(5)
-            }
-            if (parts[1].includes('U')) {
-                meetingDays.push(6)
-            }
+            // Otherwise, check for each day and push the corresponding number
+            weekdayLetters.forEach((letter, number) =>{
+                if(parts[1].includes(letter)){
+                    meetingDays.push(number)
+                }
+            });
         }
 
         // Add each meeting day
