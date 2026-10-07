@@ -27,7 +27,7 @@ function App() {
                 method: 'POST',
                 body: formData,
             });
-            // const arr = await response.json();
+            const courseList = await response.json();
         }
     }
     if(!user){

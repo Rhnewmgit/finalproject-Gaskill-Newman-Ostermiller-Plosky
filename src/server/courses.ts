@@ -41,24 +41,32 @@ export function courseRoutes(app: express.Express) {
         let userCourses: CourseDBTuple[];
         bb.on('file', async (name, file, info) => {
             const { filename, encoding, mimeType } = info;
-            console.log(
-                `File [${name}]: filename: %j, encoding: %j, mimeType: %j`,
-                filename,
-                encoding,
-                mimeType
-            );
+            // console.log(
+            //     `File [${name}]: filename: %j, encoding: %j, mimeType: %j`,
+            //     filename,
+            //     encoding,
+            //     mimeType
+            // );
             if (!filename.includes("View_My_Courses") || mimeType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                 console.log(`Improper sheeet type given; filename of ${filename} or mimeType ${mimeType} was not accepted`);
+                res.status(400).json({
+                    error: `Improper sheeet type given; filename of ${filename} or mimeType ${mimeType} was not accepted`
+                });
                 return;
             }
             userCourses = await parseXLSX(file);
-            if (userCourses.length < 1) {
-                console.log(`No courses found in provided file ${filename}`);
+            if (!userCourses.length) {
+                console.log(`Unable to parse course in provided file: ${filename}`);
+                res.status(400).json({
+                    error: `Unable to parse course in provided file: ${filename}`
+                });
                 return;
             }
             const user = await getUserByToken(req.session?.token);
             if (!user) {
-                console.log(`No user token found`);
+                res.status(404).json({
+                    error: "User not found"
+                });
                 return;
             }
             const courseYear: Number = userCourses[0].academicYear;
@@ -68,7 +76,7 @@ export function courseRoutes(app: express.Express) {
         });
 
         bb.on('close', () => {
-            console.log('Done parsing form!');
+            // console.log('Done parsing form!');
             res.json(userCourses);
             // res.writeHead(303, { Connection: 'close', Location: '/' });
         });
