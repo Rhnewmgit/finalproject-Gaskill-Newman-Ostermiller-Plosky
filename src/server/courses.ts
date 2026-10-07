@@ -1,10 +1,9 @@
 import express from "express"
 import { CourseSection, User } from "./models.js"
-import { Types } from "mongoose";
 import busboy from "busboy";
 import { parseXLSX, type CourseDBTuple } from "./xlsxHandler.js";
 import { getUserByToken } from "./auth.js";
-import { log } from "node:console";
+import * as Types from "../shared/types.js";
 
 export function courseRoutes(app: express.Express) {
     app.get("/api/courses/:user", async (req, res) => {
@@ -22,15 +21,7 @@ export function courseRoutes(app: express.Express) {
             return;
         }
 
-        const courseSections = await CourseSection.find({
-            $or: user.courses.map(course => {
-                return {
-                    code: course.code,
-                    section: course.section,
-                    academicYearStart: course.academicYear
-                }
-            })
-        })
+        const courseSections = await getCourseSections(user);
 
         res.status(200).json(courseSections);
     });
@@ -73,13 +64,27 @@ export function courseRoutes(app: express.Express) {
             const newCourses: { code: String, section: String, academicYear: number }[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
             // console.log(newCourses);
             await user.updateOne({ courses: newCourses });
+            const courseSections = await getCourseSections(user);
+            res.json(courseSections);
         });
 
         bb.on('close', () => {
             // console.log('Done parsing form!');
-            res.json(userCourses);
+            // res.json(userCourses);
             // res.writeHead(303, { Connection: 'close', Location: '/' });
         });
         req.pipe(bb);
     });
+}
+
+export async function getCourseSections(user: Types.User) {
+    return await CourseSection.find({
+        $or: user.courses.map(course => {
+            return {
+                code: course.code,
+                section: course.section,
+                academicYearStart: course.academicYear
+            }
+        })
+    })
 }
