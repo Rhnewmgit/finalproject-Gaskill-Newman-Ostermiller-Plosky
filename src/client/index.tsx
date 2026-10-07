@@ -5,12 +5,24 @@ import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
 import { Term } from "../shared/types.js";
 import { LogoutButton } from "./LogoutButton.jsx";
+import { Header } from "./Header.js";
 import { ShareDialog } from "./ShareDialog.jsx";
 
 function App() {
+    enum Page{Index, Login, SignUp}
     const [term, setTerm] = useState<Term>("A");
     const [user, setUser] = useState(null);
-    const [page, setPage] = useState(location.pathname)
+    const [page, setPage] = useState(Page.Index)
+
+    function loadLogin(event: MouseEvent): void {
+        console.log("Going to login page")
+        setPage(Page.Login)
+    }
+
+    function loadSignUp(event: MouseEvent): void{
+        console.log("Going to account creation page")
+        setPage(Page.SignUp)
+    }
 
     //check login status on page load
     useEffect(() =>{
@@ -19,47 +31,60 @@ function App() {
         .then(json => setUser(json.user))
     }, [])
 
-    useEffect(()=>{
-        window.addEventListener('popstate', ()=>{
-            setPage(location.pathname)
-        })
-    },[])
-
-    async function handleFileInput(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            await fetch("/api/courses", {
-                method: 'POST',
-                body: formData,
-            });
-        }
-    }
-    if(!user){
-        return <AuthForm onLogin={setUser}/>
-    }else{
+    // if(!user){
+    //     return <AuthForm onLogin={setUser}/>
+        // return <>
+        //     <header>
+        //         <button>Log In</button>
+        //     </header>
+        //     <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
+        // </>
+    // }else{
+    if(!user && page == Page.Login){
         return <>
-            <select onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
-                <option value="A" selected>A term</option>
-                <option value="B">B term</option>
-                <option value="F">Fall Semester</option>
-                <option value="C">C term</option>
-                <option value="D">D term</option>
-                <option value="S">Spring Semester</option>
-                <option value="G">Graduate Spring Late Start</option>
-                <option value="E1">E1 term</option>
-                <option value="E2">E2 term</option>
-                <option value="E">Summer term</option>
-            </select>
-            <LogoutButton onLogout={setUser}/>
-            <Schedule user={user} term={term} academicYear={2026} />
-            <button onClick={async () => {
-                await exportScheduleImage(user, 2026, term);
-            }}>Export Image</button>
-            <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
-            <ShareDialog user={user}/>
+            <Header loggedIn={false} login={loadLogin} />
+            <main>
+                <AuthForm isLogin={true} onLogin={setUser} signUp={loadSignUp} />
+            </main>
+        </>
+    }
+    else if(!user && page == Page.SignUp){
+        return <>
+            <Header loggedIn={false} login={loadLogin} />
+            <main>
+                <AuthForm isLogin={false} onLogin={setUser} login={loadLogin} />
+            </main>
+        </>
+    }
+    else{
+        if(page != Page.Index){setPage(Page.Index)}
+        console.log(user)
+        return <>
+            <Header loggedIn={!!user} setUser={setUser} login={loadLogin} />
+            <main>
+                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
+                    <option value="A" selected>A term</option>
+                    <option value="B">B term</option>
+                    <option value="F">Fall Semester</option>
+                    <option value="C">C term</option>
+                    <option value="D">D term</option>
+                    <option value="S">Spring Semester</option>
+                    <option value="G">Graduate Spring Late Start</option>
+                    <option value="E1">E1 term</option>
+                    <option value="E2">E2 term</option>
+                    <option value="E">Summer term</option>
+                </select>
+                <div class="sidescroller">
+                    {user
+                        ? <Schedule user={user} term={term} academicYear={2026} />
+                        : <p class='centered'>Please log in to see your schedule.</p>
+                    }
+                </div>
+                <div class='centered'>
+                    <button class="centered">Export as image</button>
+                    <ShareDialog user={user}/>
+                </div>
+            </main>
         </>
     }
 }
