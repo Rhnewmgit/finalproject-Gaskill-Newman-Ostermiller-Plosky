@@ -79,6 +79,16 @@ courseSectionSchema.index({
 export type CourseSectionDocument = InferSchemaType<typeof courseSectionSchema>;
 export const CourseSection = model<CourseSectionDocument>("CourseSection", courseSectionSchema);
 
+const courseDbStatusSchema = new Schema({
+    lastUpdate: {
+        required: true,
+        type: Number
+    }
+})
+
+export type CourseDBStatusDocument = InferSchemaType<typeof courseDbStatusSchema.obj>;
+export const CourseDBStatus = model("CourseDBStatus", courseDbStatusSchema);
+
 const userSchema = new Schema({
     username: {
         required: true,

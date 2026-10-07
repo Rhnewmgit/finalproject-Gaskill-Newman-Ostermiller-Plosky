@@ -7,6 +7,7 @@ import { courseRoutes } from "./courses.js"
 import { fetchCourseData } from "./fetchCourseData.js";
 import cookieSession from 'cookie-session';
 import { authRoutes } from "./auth.js";
+import { CourseDBStatus } from "./models.js";
 
 dotenv.config()
 
@@ -32,8 +33,15 @@ app.get("/{*a}", (req: express.Request, res: express.Response) => {
   res.sendFile(join(import.meta.dirname, "../client/index.html"))
 })
 
-/* Actually runs the function that fetches the course data. Can be put anywhere */
-fetchCourseData()
+const courseDbStatus = await CourseDBStatus.findOne() || new CourseDBStatus({
+  lastUpdate: 0
+});
+
+if (Date.now() > courseDbStatus.lastUpdate + 86400000) {
+  await fetchCourseData();
+  courseDbStatus.lastUpdate = Date.now();
+  await courseDbStatus.save();
+}
 
 app.listen(process.env.PORT || 3000)
 
