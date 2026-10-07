@@ -10,8 +10,9 @@ import { Header } from "./Header.js";
 
 function App() {
 
-    // To add another page, add its name to the Page enum, a loadPage function
-    // which 
+    // To add another page, add its name to the Page enum and logic to the page
+    // handling section below. To switch to the page, update useState to the
+    // enum value
     enum Page{Index, Login, SignUp}
     const [page, setPage] = useState(Page.Index)
 

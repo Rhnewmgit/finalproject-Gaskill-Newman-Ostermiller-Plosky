@@ -39,12 +39,25 @@ button, select, .file-input{
     &:hover{
         background-color:var(--dark-red);
     }
+    &:focus, &:focus-within{
+        /* Focus-within styles .file-input label when the input is focused */
+        outline:3px dotted var(--wpi-gray);
+    }
 }
 input[type=text], input[type=password], textarea{
     padding:5px;
 }
 input[type="file"]{
-    display:none;
+    /* Hide the file input visually while preserving keyboard focus */
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    clip-path:inset(50%);
+    border:0;
 }
 
 /* REUSABLE CLASSES */
@@ -93,8 +106,9 @@ header .title{
     margin:0;
 }
 header > button, header > .file-input{
+    background-color:transparent;
     &:hover{
-        background-color:unset;
+        background-color:transparent;
     }
 }
 main{
