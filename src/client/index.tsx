@@ -9,16 +9,31 @@ import { LogoutButton } from "./LogoutButton.jsx";
 import { Header } from "./Header.js";
 
 function App() {
+
+    // To add another page, add its name to the Page enum, a loadPage function
+    // which 
     enum Page{Index, Login, SignUp}
-    const [term, setTerm] = useState<Term>("A");
-    const [user, setUser] = useState(null);
     const [page, setPage] = useState(Page.Index)
 
+    const [term, setTerm] = useState<Term>("A");
+    const [user, setUser] = useState(null);
+
+    // This function can be passed down to components and set as an onclick
+    // function for buttons which go to the index page
+    function loadIndex(event: MouseEvent): void {
+        console.log("Going to index page")
+        setPage(Page.Index)
+    }
+
+    // This function can be passed down to components and set as an onclick
+    // function for buttons which go to the login page
     function loadLogin(event: MouseEvent): void {
         console.log("Going to login page")
         setPage(Page.Login)
     }
 
+    // This function can be passed down to components and set as an onclick
+    // function for buttons which go to the account creation page
     function loadSignUp(event: MouseEvent): void{
         console.log("Going to account creation page")
         setPage(Page.SignUp)
@@ -31,36 +46,34 @@ function App() {
         .then(json => setUser(json.user))
     }, [])
 
-    // if(!user){
-    //     return <AuthForm onLogin={setUser}/>
-        // return <>
-        //     <header>
-        //         <button>Log In</button>
-        //     </header>
-        //     <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
-        // </>
-    // }else{
+    // -------------------------------------------------------------------------
+    // PAGE HANDLING
+    // This handles the logic for when to load pages and what to load
+    // Most pages should have a <Header> and a <main> element
+    // -------------------------------------------------------------------------
     if(!user && page == Page.Login){
+        // Loads the login page only if the user is not logged in
         return <>
-            <Header loggedIn={false} login={loadLogin} />
+            <Header loggedIn={false} loadIndex={loadIndex} loadLogin={loadLogin} />
             <main>
-                <AuthForm isLogin={true} onLogin={setUser} signUp={loadSignUp} />
+                <AuthForm isLogin={true} onLogin={setUser} loadSignUp={loadSignUp} />
             </main>
         </>
     }
     else if(!user && page == Page.SignUp){
+        // Loads the account creation page only if the user is not logged in
         return <>
-            <Header loggedIn={false} login={loadLogin} />
+            <Header loggedIn={false} loadIndex={loadIndex} loadLogin={loadLogin} />
             <main>
-                <AuthForm isLogin={false} onLogin={setUser} login={loadLogin} />
+                <AuthForm isLogin={false} onLogin={setUser} loadLogin={loadLogin} />
             </main>
         </>
     }
     else{
+        // Otherwise loads the index page
         if(page != Page.Index){setPage(Page.Index)}
-        console.log(user)
         return <>
-            <Header loggedIn={!!user} setUser={setUser} login={loadLogin} />
+            <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} />
             <main>
                 <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
                     <option value="A" selected>A term</option>

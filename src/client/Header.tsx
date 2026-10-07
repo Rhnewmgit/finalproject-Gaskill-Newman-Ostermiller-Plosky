@@ -30,7 +30,7 @@ export function Header(props){
 
     return <>
         <header>
-            <p>WPI Schedule Viewer</p>
+            <button class='title' type='button' onClick={props.loadIndex}>WPI Schedule Viewer</button>
             <label class="file-input">
                 <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
                 Upload Schedule
@@ -39,7 +39,7 @@ export function Header(props){
                 ? <><form onSubmit={handleLogout}>
                         <button type='submit'>Log Out</button>
                     </form></>
-                : <button type='button' onClick={props.login}>Log In</button>
+                : <button type='button' onClick={props.loadLogin}>Log In</button>
             }
         </header>
     </>

@@ -19,30 +19,6 @@ body{
     padding:0;
 }
 
-/* MAIN CONTENT WRAPPERS */
-header{
-    background-color:var(--wpi-red);
-    color:white;
-    padding:.7rem;
-    display:flex;
-    align-items:end;
-    /* justify-content:space-between; */
-    :last-child{
-        margin-left:auto
-    }
-}
-header p{
-    font-weight:bold;
-    font-size:20px;
-    padding:.8rem;
-    /* subtract 1 px to align baseline with 2px smaller links */
-    padding-bottom:calc(.8rem - 1px); 
-    margin:0;
-}
-main{
-    padding:1rem;
-}
-
 /* HEADINGS */
 h2{
     text-align:center;
@@ -59,6 +35,10 @@ button, select, .file-input{
     padding:.8rem;
     max-width:fit-content;
     color:white;
+    
+    &:hover{
+        background-color:var(--dark-red);
+    }
 }
 input[type=text], input[type=password], textarea{
     padding:5px;
@@ -84,9 +64,63 @@ input[type="file"]{
     display: inline;
     padding:.2em;
     text-align:center;
+
+    &:hover{
+        background-color:unset;
+    }
 }
 .fake-link:hover{
     color:var(--dark-red);
+}
+
+/* MAIN CONTENT WRAPPERS */
+header{
+    background-color:var(--wpi-red);
+    color:white;
+    padding:.7rem;
+    display:flex;
+    align-items:end;
+    :last-child{
+        margin-left:auto
+    }
+}
+header .title{
+    font-weight:bold;
+    font-size:20px;
+    padding:.8rem;
+    /* subtract 1 px to align baseline with 2px smaller links */
+    padding-bottom:calc(.8rem - 1px); 
+    margin:0;
+}
+header > button, header > .file-input{
+    &:hover{
+        background-color:unset;
+    }
+}
+main{
+    padding:1rem;
+}
+
+/* AUTH FORM */
+#auth-form{
+    display:grid;
+    grid-template-columns:max-content max-content;
+    gap:1rem;
+    width:max-content;
+    margin:0 auto;
+
+    label{
+        margin:auto 0;
+    }
+    button{
+        grid-column-start:2;
+    }
+}
+auth-link{
+    text-align:center;
+    margin-top:1rem;
+    /* width:100%; */
+    display:block;
 }
 
 /* SCHEDULE GRID */
@@ -94,6 +128,7 @@ input[type="file"]{
     border-bottom:3px solid lightgray;
     display: grid;
     grid-auto-rows:minmax(10px, auto);
+    grid-template-columns:1fr repeat(5, 3fr);
 
     div {
         padding: 5px;
@@ -123,26 +158,41 @@ input[type="file"]{
     .course-section p:first-of-type{
         font-weight:bold;
     }
-}
 
-/* AUTH FORM */
-#auth-form{
-    display:grid;
-    grid-template-columns:max-content max-content;
-    gap:1rem;
-    width:max-content;
-    margin:0 auto;
-
-    label{
-        margin:auto 0;
+    .course0{
+        background-color:rgb(218, 127, 75);
     }
-    button{
-        grid-column-start:2;
+    .course1{
+        background-color:rgb(124, 180, 220);
     }
-}
-auth-link{
-    text-align:center;
-    margin-top:1rem;
-    /* width:100%; */
-    display:block;
+    .course2{
+        background-color:rgb(219, 172, 31);
+    }
+    .course3{
+        background-color:rgb(103, 164, 62);
+    }
+    .course4{
+        background-color:rgb(168, 117, 197);
+    }
+    .course5{
+        background-color:rgb(46, 168, 163);
+    }
+    .course6{
+        background-color:rgb(227, 137, 132);
+    }
+    .course7{
+        background-color:rgb(100, 100, 193);
+    }
+    .course8{
+        background-color:rgb(117, 212, 180);
+    }
+    .course9{
+        background-color:rgb(212, 174, 117);
+    }
+    .course10{
+        background-color:rgb(155, 199, 97);
+    }
+    .course11{
+        background-color:rgb(163, 101, 126);
+    }
 }
