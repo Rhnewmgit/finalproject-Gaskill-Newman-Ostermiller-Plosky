@@ -4,7 +4,6 @@ import { exportScheduleImage } from "./exportScheduleImage.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
 import { CourseSection, Term } from "../shared/types.js";
-import { LogoutButton } from "./LogoutButton.jsx";
 import { Header } from "./Header.js";
 import { filterCourseSections } from "../shared/util"
 
@@ -15,7 +14,6 @@ function App() {
     // enum value
     enum Page{Index, Login, SignUp}
     const [page, setPage] = useState(Page.Index)
-
     const [term, setTerm] = useState<Term>("A");
     const [user, setUser] = useState(null);
     const [academicYear, setAcademicYear] = useState(2026);
@@ -59,24 +57,6 @@ function App() {
         .then(json => setUser(json.user))
     }, [])
 
-    async function handleFileInput(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];        
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            const response = await fetch("/api/courses", {
-                method: 'POST',
-                body: formData,
-            });
-            const courseSections = await response.json();
-            if (courseSections.length) {
-                console.log(filterCourseSections(courseSections, academicYear, term));
-                setSections(filterCourseSections(courseSections, academicYear, term));
-                setAcademicYear(courseSections[0].academicYearStart);
-            }      
-        }
-    }
     // -------------------------------------------------------------------------
     // PAGE HANDLING
     // This handles the logic for when to load pages and what to load
@@ -104,7 +84,8 @@ function App() {
         // Otherwise loads the index page
         if(page != Page.Index){setPage(Page.Index)}
         return <>
-            <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} />
+            <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
             <main>
                 <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
                     <option value="A" selected>A term</option>
@@ -120,12 +101,12 @@ function App() {
                 </select>
                 <div class="sidescroller">
                     {user
-                        ? <Schedule user={user} term={term} academicYear={2026} />
+                        ? <Schedule sections={sections} />
                         : <p class='centered'>Please log in to see your schedule.</p>
                     }
                 </div>
                 <button class='centered' onClick={async () => {
-                    await exportScheduleImage(user, 2026, term);
+                    await exportScheduleImage(user, academicYear, term);
                 }}>Export Image</button>
             </main>
         </>

@@ -1,18 +1,25 @@
 import { useState } from "preact/hooks"
-import { LogoutButton } from "./LogoutButton.jsx";
+import { filterCourseSections } from "../shared/util"
+import { CourseSection, Term } from "../shared/types.js";
 
-export function Header(props){
+export function Header(props: any){
     // Sends the selected file to the server
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
+        const file = input.files?.[0];        
         if (file) {
             const formData = new FormData();
             formData.append("file", file);
-            await fetch("/api/courses", {
+            const response = await fetch("/api/courses", {
                 method: 'POST',
                 body: formData,
             });
+            const courseSections = await response.json();
+            if (courseSections.length) {
+                console.log(filterCourseSections(courseSections, props.academicYear, props.term));
+                props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
+                props.setAcademicYear(courseSections[0].academicYearStart);
+            }      
         }
     }
         
