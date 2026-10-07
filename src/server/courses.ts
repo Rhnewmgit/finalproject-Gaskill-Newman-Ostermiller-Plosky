@@ -77,7 +77,7 @@ export function courseRoutes(app: express.Express) {
     });
 }
 
-export async function getCourseSections(user: Types.User) {
+export async function getCourseSections(user: Types.User): Promise<Types.CourseSection[]> {
     return await CourseSection.find({
         $or: user.courses.map(course => {
             return {

@@ -4,18 +4,8 @@ import { mostExtremeTimes, formatTime, filterCourseSections } from "../shared/ut
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-export function Schedule(props: {user: string, academicYear: number, term: Term}) {
-    const [sections, setSections] = useState<CourseSection[]>([]);
-
-    useEffect(() => {
-        fetch("/api/courses/" + props.user).then(r => {
-            return r.json();
-        }).then(sections => {
-            setSections(filterCourseSections(sections, props.academicYear, props.term))
-        });
-    }, [props.user, props.academicYear, props.term]);
-
-    const extremes = mostExtremeTimes(sections);
+export function Schedule(props: {sections: CourseSection[]}) {
+    const extremes = mostExtremeTimes(props.sections);
     const hours: number[] = [];
     for (let h = Math.floor(extremes.earliest / 60); h < Math.ceil(extremes.latest / 60); h++) {
         hours.push(h);
@@ -45,7 +35,7 @@ export function Schedule(props: {user: string, academicYear: number, term: Term}
                 {day}
             </div>
         })}
-        {sections.map(section => {
+        {props.sections.map(section => {
             return <>
                 {section.meetings.map(meeting => {
                     return <div class="course-section" style={{

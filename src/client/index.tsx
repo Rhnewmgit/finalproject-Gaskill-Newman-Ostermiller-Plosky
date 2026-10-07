@@ -3,12 +3,25 @@ import { useEffect, useState } from "preact/hooks";
 import { exportScheduleImage } from "./exportScheduleImage.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
-import { Term } from "../shared/types.js";
+import { CourseSection, Term } from "../shared/types.js";
 import { LogoutButton } from "./LogoutButton.jsx";
+import { filterCourseSections } from "../shared/util"
 
 function App() {
     const [term, setTerm] = useState<Term>("A");
     const [user, setUser] = useState(null);
+    const [academicYear, setAcademicYear] = useState(2026);
+    const [sections, setSections] = useState<CourseSection[]>([]);
+
+    useEffect(() => {
+        if (user) {
+            fetch("/api/courses/" + user).then(r => {
+            return r.json();
+        }).then(sections => {
+            setSections(filterCourseSections(sections, academicYear, term))
+        });
+        }
+    }, [user, academicYear, term]);
 
     //check login status on page load
     useEffect(() =>{
@@ -19,7 +32,7 @@ function App() {
 
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
+        const file = input.files?.[0];        
         if (file) {
             const formData = new FormData();
             formData.append("file", file);
@@ -27,9 +40,15 @@ function App() {
                 method: 'POST',
                 body: formData,
             });
-            const courseList = await response.json();
+            const courseSections = await response.json();
+            if (courseSections.length) {
+                console.log(filterCourseSections(courseSections, academicYear, term));
+                setSections(filterCourseSections(courseSections, academicYear, term));
+                setAcademicYear(courseSections[0].academicYearStart);
+            }      
         }
     }
+
     if(!user){
         return <AuthForm onLogin={setUser}/>
     }else{
@@ -47,9 +66,9 @@ function App() {
                 <option value="E">Summer term</option>
             </select>
             <LogoutButton onLogout={setUser}/>
-            <Schedule user={user} term={term} academicYear={2026} />
+            <Schedule sections={sections} />
             <button onClick={async () => {
-                await exportScheduleImage(user, 2026, term);
+                await exportScheduleImage(user, academicYear, term);
             }}>Export Image</button>
             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
         </>

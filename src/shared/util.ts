@@ -1,6 +1,6 @@
 import { CourseSection, Term } from "./types.js";
 
-export function mostExtremeTimes (sections: CourseSection[]) {
+export function mostExtremeTimes(sections: CourseSection[]) {
     let earliest = 1439;
     let latest = 0;
 
@@ -25,7 +25,7 @@ export function formatTime(time: number) {
     return (hour > 12 ? hour - 12 : hour) + ":" + minute.toString().padStart(2, "0") + " " + (hour >= 12 ? "PM" : "AM");
 }
 
-const termMappings: {[K in Term]: Term[]} = {
+const termMappings: { [K in Term]: Term[] } = {
     A: ["F"],
     B: ["F"],
     C: ["S"],
@@ -44,7 +44,7 @@ export function filterCourseSections(sections: CourseSection[], academicYear: nu
             return false;
         }
 
-        if (section.term !== term && !termMappings[term].includes(section.term)) {
+        if (section.term !== term) {
             return false;
         }
 
