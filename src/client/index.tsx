@@ -6,10 +6,23 @@ import { ScheduleCanvas } from "./ScheduleCanvas.jsx";
 import { AuthForm } from "./AuthForm.js"
 import { Term } from "../shared/types.js";
 import { LogoutButton } from "./LogoutButton.jsx";
+import { Header } from "./Header.js";
 
 function App() {
+    enum Page{Index, Login, SignUp}
     const [term, setTerm] = useState<Term>("A");
     const [user, setUser] = useState(null);
+    const [page, setPage] = useState(Page.Index)
+
+    function loadLogin(event: MouseEvent): void {
+        console.log("Going to login page")
+        setPage(Page.Login)
+    }
+
+    function loadSignUp(event: MouseEvent): void{
+        console.log("Going to account creation page")
+        setPage(Page.SignUp)
+    }
 
     //check login status on page load
     useEffect(() =>{
@@ -18,35 +31,36 @@ function App() {
         .then(json => setUser(json.user))
     }, [])
 
-    async function handleFileInput(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            await fetch("/api/courses", {
-                method: 'POST',
-                body: formData,
-            });
-        }
-    }
-    if(!user){
-        return <AuthForm onLogin={setUser}/>
+    // if(!user){
+    //     return <AuthForm onLogin={setUser}/>
         // return <>
         //     <header>
         //         <button>Log In</button>
         //     </header>
         //     <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
         // </>
-    }else{
+    // }else{
+    if(!user && page == Page.Login){
         return <>
-            <header>
-                <label class="file-input">
-                    <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
-                    Upload Schedule
-                </label>
-                <LogoutButton onLogout={setUser}/>
-            </header>
+            <Header loggedIn={false} login={loadLogin} />
+            <main>
+                <AuthForm isLogin={true} onLogin={setUser} signUp={loadSignUp} />
+            </main>
+        </>
+    }
+    else if(!user && page == Page.SignUp){
+        return <>
+            <Header loggedIn={false} login={loadLogin} />
+            <main>
+                <AuthForm isLogin={false} onLogin={setUser} login={loadLogin} />
+            </main>
+        </>
+    }
+    else{
+        if(page != Page.Index){setPage(Page.Index)}
+        console.log(user)
+        return <>
+            <Header loggedIn={!!user} setUser={setUser} login={loadLogin} />
             <main>
                 <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
                     <option value="A" selected>A term</option>
@@ -61,7 +75,8 @@ function App() {
                     <option value="E">Summer term</option>
                 </select>
                 <div class="sidescroller">
-                    <Schedule user={user} term={term} academicYear={2026} />
+                    <p> SCHEDULE GOES HERE </p>
+                    {/* <Schedule user={user} term={term} academicYear={2026} /> */}
                 </div>
                 <button class="centered">Export as image</button>
             </main>
