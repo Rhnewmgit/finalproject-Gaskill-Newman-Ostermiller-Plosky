@@ -4,7 +4,6 @@ import { exportScheduleImage } from "./exportScheduleImage.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
 import { Term } from "../shared/types.js";
-import { LogoutButton } from "./LogoutButton.jsx";
 import { Header } from "./Header.js";
 import { ShareDialog } from "./ShareDialog.jsx";
 
@@ -94,10 +93,12 @@ function App() {
                         : <p class='centered'>Please log in to see your schedule.</p>
                     }
                 </div>
-                <div class='centered'>
-                    <button class="centered">Export as image</button>
+                {user && <div class='centered button-div'>
+                    <button onClick={async () => {
+                        await exportScheduleImage(user, 2026, term);
+                    }}>Export Image</button>
                     <ShareDialog user={user}/>
-                </div>
+                </div>}
             </main>
         </>
     }

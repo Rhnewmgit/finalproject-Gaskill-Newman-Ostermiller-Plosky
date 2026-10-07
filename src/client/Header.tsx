@@ -1,7 +1,6 @@
 import { useState } from "preact/hooks"
-import { LogoutButton } from "./LogoutButton.jsx";
 
-export function Header(props){
+export function Header(props:any){
     // Sends the selected file to the server
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
