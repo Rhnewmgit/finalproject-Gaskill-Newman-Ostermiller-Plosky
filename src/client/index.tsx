@@ -75,8 +75,10 @@ function App() {
                     <option value="E">Summer term</option>
                 </select>
                 <div class="sidescroller">
-                    <p> SCHEDULE GOES HERE </p>
-                    {/* <Schedule user={user} term={term} academicYear={2026} /> */}
+                    {user
+                        ? <Schedule user={user} term={term} academicYear={2026} />
+                        : <p class='centered'>Please log in to see your schedule.</p>
+                    }
                 </div>
                 <button class="centered">Export as image</button>
             </main>
