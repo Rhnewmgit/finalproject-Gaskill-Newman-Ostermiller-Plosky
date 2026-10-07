@@ -1,12 +1,11 @@
 import { useState } from "preact/hooks"
 
-export function AuthForm(props : {onLogin: Function}){
-    const [isLoginMode, setLoginMode] = useState(true)
+export function AuthForm(props){
     const [errorMsg, setErrorMsg] = useState('');
 
     const handleSubmit = async(event:Event) => {
 		event.preventDefault()
-        const route :string = isLoginMode ? '/api/log-in' : '/api/sign-up';
+        const route :string = props.isLogin ? '/api/log-in' : '/api/sign-up';
         const authForm = event.currentTarget as HTMLFormElement;
         const formData:FormData = new FormData(authForm)
         console.log(formData)
@@ -25,33 +24,32 @@ export function AuthForm(props : {onLogin: Function}){
             setErrorMsg(json.error)
         }
 	}
-    function handleClick(event: MouseEvent): void {
-        setLoginMode(!isLoginMode)
-    }
 
     return <>
-        {isLoginMode ? <h1 class='margin'>Log In</h1> : <h1 class='margin'>Sign Up</h1>}
-        <form class='margin' id="auth-form" onSubmit={handleSubmit}>
-            <label class='login-field' for='username'>Username: </label>
-            <input class='login-field' type='text' name='username'/>
+        {props.isLogin ? <h2>Log In</h2> : <h2>Sign Up</h2>}
+        <form id="auth-form" onSubmit={handleSubmit}>
+            <label for='username'>Username:</label>
+            <input type='text' name='username'/>
 
-            <label class='login-field' for='password'>Password: </label>
-            <input class='login-field' type='text' name='password'/>
+            <label for='password'>Password:</label>
+            <input type='password' name='password'/>
 
-            {!isLoginMode && 
+            {!props.isLogin && 
             <>
-                <label class='login-field' for='password2'>Re-enter password: </label>
-                <input class='login-field' type='text' name='password2'/>
+                <label for='password2'>Re-enter password:</label>
+                <input type='password' name='password2'/>
             </>}
-            <button class='submit' type="submit">{isLoginMode? 'Log In' : 'Sign Up'}</button>
+            <button type="submit">{props.isLogin? 'Log In' : 'Sign Up'}</button>
         </form>
-        {isLoginMode ?
-            <>
-                <p class='inline margin'>No account yet?</p>
-                <button class='fake-link' type = 'button' onClick={handleClick}>Sign up here!</button>
-            </> 
+        {props.isLogin ?
+            <auth-link>
+                No account yet?
+                <button class='fake-link' type='button' onClick={props.loadSignUp}>Sign up here!</button>
+            </auth-link> 
         :
-            <button class='margin fake-link' type='button' onClick={handleClick}>Return to login page</button>
+            <auth-link>
+                <button class='fake-link' type='button' onClick={props.loadLogin}>Return to login page</button>
+            </auth-link>
         }   
         <p> {errorMsg}</p>
     </>
