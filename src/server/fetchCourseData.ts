@@ -1,5 +1,5 @@
 import { CourseListingsCourseSection, CourseMeetingPattern } from "../shared/types.js"
-import { CourseSection, CourseSectionDocument } from "./models.js"
+import { CourseSection } from "./models.js"
 
 // Updates the course data in the database for the current year based on the
 // data provided from WPI's server

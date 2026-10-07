@@ -1,10 +1,152 @@
-html {
+/* VARIALBES */
+:root{
+    --wpi-red:#AC2B37;
+    --wpi-gray:#A9B0B7;
+    --dark-red:#630811;
+}
+
+/* DEFAULTS AND PAGE CONTAINERS */
+*{
+    box-sizing:border-box;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
 }
+html {
+    overscroll-behavior:none;
+}
+body{
+    margin:0;
+    padding:0;
+}
 
+/* HEADINGS */
+h2{
+    text-align:center;
+    margin:0 0 1rem;
+    font-size:25px;
+}
+
+/* INPUT */
+button, select, .file-input{
+    background-color:var(--wpi-red);
+    border:none;
+    display:block;
+    cursor:pointer;
+    padding:.8rem;
+    max-width:fit-content;
+    color:white;
+    
+    &:hover{
+        background-color:var(--dark-red);
+    }
+    &:focus, &:focus-within{
+        /* Focus-within styles .file-input label when the input is focused */
+        outline:3px dotted var(--wpi-gray);
+        background-color:var(--dark-red);
+    }
+}
+input[type=text], input[type=password], textarea{
+    padding:5px;
+    &:focus{
+        outline:3px dotted var(--wpi-gray);
+    }
+}
+input[type="file"]{
+    /* Hide the file input visually while preserving keyboard focus */
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    clip-path:inset(50%);
+    border:0;
+}
+
+/* REUSABLE CLASSES */
+.centered{
+    margin:0 auto;
+}
+.sidescroller{
+    max-width:100%;
+    overflow-x:auto;
+    margin:1rem 0;
+}
+.fake-link{
+    color: var(--wpi-red);
+    text-decoration:underline;
+    border:none;
+    background:none;
+    display: inline;
+    padding:.2em;
+    text-align:center;
+
+    &:hover{
+        background-color:unset;
+    }
+}
+.fake-link:hover{
+    color:var(--dark-red);
+}
+
+/* MAIN CONTENT WRAPPERS */
+header{
+    background-color:var(--wpi-red);
+    color:white;
+    padding:.7rem;
+    display:flex;
+    align-items:end;
+    :last-child{
+        margin-left:auto
+    }
+}
+header .title{
+    font-weight:bold;
+    font-size:20px;
+    padding:.8rem;
+    /* subtract 1 px to align baseline with 2px smaller links */
+    padding-bottom:calc(.8rem - 1px); 
+    margin:0;
+}
+header > button, header > .file-input{
+    background-color:transparent;
+    &:hover{
+        background-color:transparent;
+    }
+}
+main{
+    padding:1rem;
+}
+
+/* AUTH FORM */
+#auth-form{
+    display:grid;
+    grid-template-columns:max-content max-content;
+    gap:1rem;
+    width:max-content;
+    margin:0 auto;
+
+    label{
+        margin:auto 0;
+    }
+    button{
+        grid-column-start:2;
+    }
+}
+auth-link{
+    text-align:center;
+    margin-top:1rem;
+    /* width:100%; */
+    display:block;
+}
+
+/* SCHEDULE GRID */
 .schedule {
+    border-bottom:3px solid lightgray;
     display: grid;
+    grid-auto-rows:minmax(10px, auto);
+    grid-template-columns:1fr repeat(5, 3fr);
 
     div {
         padding: 5px;
@@ -14,7 +156,6 @@ html {
         font-weight: bold;
         text-align: center;
     }
-
     .header-stripe {
         background-color: #ccc;
         grid-row: 1;
@@ -29,39 +170,47 @@ html {
         margin: 2px;
         background-color: #ddd;
     }
-}
+    .course-section p {
+        margin-top: 0;
+    }
+    .course-section p:first-of-type{
+        font-weight:bold;
+    }
 
-.margin{
-    margin-left: 1dvw;
-    margin-top:2dvh;
-}
-.login-field{
-    display: block;
-    padding: 0.3rem 0.5rem;
-    width: 15rem;
-}
-.submit{
-    padding: 0.3rem 0.5rem;
-    display: block;
-    border-radius: 5px;
-    font-weight: bold;
-    border:2px solid #2d2dff;
-    background-color: #2d2dff;
-    color:white;
-    margin-top: 2dvh;
-}
-
-.fake-link{
-    display: inline;
-    border:none;
-    background:none;
-    color: #0000EE;
-    font-size: 16px;
-    margin-top:2dvh;
-}
-.fake-link:hover{
-    text-decoration: underline;
-}
-.inline{
-    display: inline;
+    .course0{
+        background-color:rgb(218, 127, 75);
+    }
+    .course1{
+        background-color:rgb(124, 180, 220);
+    }
+    .course2{
+        background-color:rgb(219, 172, 31);
+    }
+    .course3{
+        background-color:rgb(103, 164, 62);
+    }
+    .course4{
+        background-color:rgb(168, 117, 197);
+    }
+    .course5{
+        background-color:rgb(46, 168, 163);
+    }
+    .course6{
+        background-color:rgb(227, 137, 132);
+    }
+    .course7{
+        background-color:rgb(100, 100, 193);
+    }
+    .course8{
+        background-color:rgb(117, 212, 180);
+    }
+    .course9{
+        background-color:rgb(212, 174, 117);
+    }
+    .course10{
+        background-color:rgb(155, 199, 97);
+    }
+    .course11{
+        background-color:rgb(163, 101, 126);
+    }
 }

@@ -17,7 +17,7 @@ export function courseRoutes(app: express.Express) {
         }
 
         if (!user.courses.length) {
-            res.status(200).json({});
+            res.status(200).json([]);
             return;
         }
 
