@@ -42,10 +42,14 @@ button, select, .file-input{
     &:focus, &:focus-within{
         /* Focus-within styles .file-input label when the input is focused */
         outline:3px dotted var(--wpi-gray);
+        background-color:var(--dark-red);
     }
 }
 input[type=text], input[type=password], textarea{
     padding:5px;
+    &:focus{
+        outline:3px dotted var(--wpi-gray);
+    }
 }
 input[type="file"]{
     /* Hide the file input visually while preserving keyboard focus */
