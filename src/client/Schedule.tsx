@@ -45,10 +45,11 @@ export function Schedule(props: {user: string, academicYear: number, term: Term}
                 {day}
             </div>
         })}
-        {sections.map(section => {
+        {sections.map((section, index) => {
+            const cssclass = "course-section course" + index
             return <>
                 {section.meetings.map(meeting => {
-                    return <div class="course-section" style={{
+                    return <div class={cssclass} style={{
                         gridRow: timeToRow(meeting.startTime, extremes.earliest) + " / " + timeToRow(meeting.endTime, extremes.earliest),
                         gridColumn: meeting.day + 2
                     }}>

@@ -44,11 +44,11 @@ export function AuthForm(props){
         {props.isLogin ?
             <auth-link>
                 No account yet?
-                <button class='fake-link' type='button' onClick={props.signUp}>Sign up here!</button>
+                <button class='fake-link' type='button' onClick={props.loadSignUp}>Sign up here!</button>
             </auth-link> 
         :
             <auth-link>
-                <button class='fake-link' type='button' onClick={props.login}>Return to login page</button>
+                <button class='fake-link' type='button' onClick={props.loadLogin}>Return to login page</button>
             </auth-link>
         }   
         <p class='margin error'> {errorMsg}</p>
