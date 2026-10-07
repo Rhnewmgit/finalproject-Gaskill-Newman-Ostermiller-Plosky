@@ -5,10 +5,12 @@ import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
 import { Term } from "../shared/types.js";
 import { LogoutButton } from "./LogoutButton.jsx";
+import { ShareDialog } from "./ShareDialog.jsx";
 
 function App() {
     const [term, setTerm] = useState<Term>("A");
     const [user, setUser] = useState(null);
+    const [page, setPage] = useState(location.pathname)
 
     //check login status on page load
     useEffect(() =>{
@@ -16,6 +18,12 @@ function App() {
         .then(res => res.json())
         .then(json => setUser(json.user))
     }, [])
+
+    useEffect(()=>{
+        window.addEventListener('popstate', ()=>{
+            setPage(location.pathname)
+        })
+    },[])
 
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
@@ -51,6 +59,7 @@ function App() {
                 await exportScheduleImage(user, 2026, term);
             }}>Export Image</button>
             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
+            <ShareDialog user={user}/>
         </>
     }
 }
