@@ -3,6 +3,8 @@ import { CourseSection, User } from "./models.js"
 import { Types } from "mongoose";
 import busboy from "busboy";
 import { parseXLSX, type CourseDBTuple } from "./xlsxHandler.js";
+import { getUserByToken } from "./auth.js";
+import { log } from "node:console";
 
 export function courseRoutes(app: express.Express) {
     app.get("/api/courses/:user", async (req, res) => {
@@ -45,19 +47,30 @@ export function courseRoutes(app: express.Express) {
                 encoding,
                 mimeType
             );
-            if (filename != "View_My_Courses.xlsx" || mimeType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+            if (!filename.includes("View_My_Courses") || mimeType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                 console.log(`Improper sheeet type given; filename of ${filename} or mimeType ${mimeType} was not accepted`);
                 return;
             }
             userCourses = await parseXLSX(file);
-            // console.log(userCourses);
-
+            if (userCourses.length < 1) {
+                console.log(`No courses found in provided file ${filename}`);
+                return;
+            }
+            const user = await getUserByToken(req.session?.token);
+            if (!user) {
+                console.log(`No user token found`);
+                return;
+            }
+            const courseYear: Number = userCourses[0].academicYear;
+            const newCourses: { code: String, section: String, academicYear: number }[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
+            // console.log(newCourses);
+            await user.updateOne({ courses: newCourses });
         });
 
         bb.on('close', () => {
-            // console.log('Done parsing form!');
-            res.writeHead(303, { Connection: 'close', Location: '/' });
+            console.log('Done parsing form!');
             res.json(userCourses);
+            // res.writeHead(303, { Connection: 'close', Location: '/' });
         });
         req.pipe(bb);
     });
