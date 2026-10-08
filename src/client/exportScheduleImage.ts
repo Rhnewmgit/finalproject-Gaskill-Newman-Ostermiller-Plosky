@@ -57,8 +57,10 @@ export async function exportScheduleImage(user: string, academicYear: number, te
 
     ctx.font = "14px Arial";
     sections.forEach(section => {
-        let courseColor = courseColors.get(section.code);
-        if (!courseColor) {
+        let courseColor: number;
+        if (courseColors.has(section.code)) {
+            courseColor = courseColors.get(section.code) as number;
+        } else {
             courseColor = lastCourseColor;
             courseColors.set(section.code, courseColor);
             lastCourseColor++;

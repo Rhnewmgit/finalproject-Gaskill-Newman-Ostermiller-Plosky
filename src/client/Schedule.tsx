@@ -38,12 +38,16 @@ export function Schedule(props: {sections: CourseSection[]}) {
             </div>
         })}
         {props.sections.map(section => {
-            let courseColor = courseColors.get(section.code);
-            if (!courseColor) {
+            let courseColor;
+            if (courseColors.has(section.code)) {
+                courseColor = courseColors.get(section.code);
+            } else {
                 courseColor = lastCourseColor;
                 courseColors.set(section.code, courseColor);
                 lastCourseColor++;
             }
+
+            console.log(courseColors)
 
             const cssclass = "course-section course" + courseColor
             return <>
