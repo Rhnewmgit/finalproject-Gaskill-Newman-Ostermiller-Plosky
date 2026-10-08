@@ -149,7 +149,7 @@ function App() {
                         ? (user ? 
                             <Schedule sections={sections} />
                             : <>
-                                <p>Log in to save your schedule.</p>
+                                <p class='centered-text'>Log in to save your schedule.</p>
                                 <Schedule sections={sections}/>
                             </>)
                         : (<>
