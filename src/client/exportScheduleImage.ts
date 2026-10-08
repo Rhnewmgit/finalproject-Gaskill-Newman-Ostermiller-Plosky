@@ -1,4 +1,4 @@
-import { CourseSection, Term } from "../shared/types.js"
+import { Term } from "../shared/types.js"
 import { mostExtremeTimes, formatTime, filterCourseSections } from "../shared/util.js"
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
