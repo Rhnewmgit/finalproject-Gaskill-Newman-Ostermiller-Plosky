@@ -55,20 +55,27 @@ export function courseRoutes(app: express.Express) {
             }
             const user = await getUserByToken(req.session?.token);
             if (!user) {
-                res.status(404).json({
-                    error: "User not found"
-                });
+                console.log("Went to no user route on parse")
+                // res.status(404).json({
+                //     error: "User not found"
+                // });
+                const courseYear: Number = userCourses[0].academicYear;
+
+                const newCourses: { code: String, section: String, academicYear: Number }[] = userCourses.map((course)=>{return {code: course.code, section: course.section, academicYear:course.academicYear}}).filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
+                res.json(newCourses);
                 return;
+            }else{
+                console.log("Went to user route on parse")
+                const courseYear: Number = userCourses[0].academicYear;
+                const newCourses: { code: String, section: String, academicYear: number }[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
+                // console.log(newCourses);
+                //await user.updateOne({ courses: newCourses });
+                //const updatedUser = await User.findById(user._id)
+                user.set('courses', newCourses);
+                await user.save()
+                const courseSections = await getCourseSections(user);
+                res.json(courseSections);
             }
-            const courseYear: Number = userCourses[0].academicYear;
-            const newCourses: { code: String, section: String, academicYear: number }[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
-            // console.log(newCourses);
-            //await user.updateOne({ courses: newCourses });
-            //const updatedUser = await User.findById(user._id)
-            user.set('courses', newCourses);
-            await user.save()
-            const courseSections = await getCourseSections(user);
-            res.json(courseSections);
         });
 
         bb.on('close', () => {

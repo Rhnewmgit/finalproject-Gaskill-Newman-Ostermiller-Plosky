@@ -77,6 +77,8 @@ function App() {
 
     useEffect(() => {
         const userToFetch =  sharedUser || user
+        console.log("Fetching courses for the user")
+
         if (userToFetch) {
             fetch("/api/courses/" + userToFetch).then(r => {
             return r.json();
