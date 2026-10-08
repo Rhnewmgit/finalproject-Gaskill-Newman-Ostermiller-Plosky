@@ -46,7 +46,7 @@ export function ShareDialog(props : {user:string}){
                     </div>
                     <button class="close-button" onClick={closeDialog}>X</button>
                     </div>
-                <input type='text' readonly value={link}/> 
+                <input type='text' name="copyLink" readonly value={link}/> 
                 {isCopied ? <button class='copied' onClick={copyLink}>Copied</button>
                     : <button onClick={copyLink}>Copy</button>}
             </dialog>

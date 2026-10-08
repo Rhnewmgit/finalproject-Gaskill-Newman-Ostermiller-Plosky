@@ -29,15 +29,15 @@ export function AuthForm(props: any){
         {props.isLogin ? <h2>Log In</h2> : <h2>Sign Up</h2>}
         <form id="auth-form" onSubmit={handleSubmit}>
             <label for='username'>Username:</label>
-            <input type='text' name='username'/>
+            <input type='text' name='username' id="username" autocomplete="username" />
 
             <label for='password'>Password:</label>
-            <input type='password' name='password'/>
+            <input type='password' name='password' id="password" autocomplete={props.isLogin ? "current-password" : "new-password"}/>
 
             {!props.isLogin && 
             <>
                 <label for='password2'>Re-enter password:</label>
-                <input type='password' name='password2'/>
+                <input type='password' name='password2' id="password2" autocomplete="new-password" />
             </>}
             <button type="submit">{props.isLogin? 'Log In' : 'Sign Up'}</button>
         </form>

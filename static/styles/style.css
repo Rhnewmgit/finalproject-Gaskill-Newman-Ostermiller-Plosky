@@ -126,6 +126,11 @@ main{
 }
 
 /* MAIN PAGE */
+.sidescroller p{
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+}
 .button-div{
     width:max-content;
 
@@ -179,10 +184,9 @@ dialog{
         grid-column-start:2;
     }
 }
-auth-link{
+.auth-link{
     text-align:center;
     margin-top:1rem;
-    /* width:100%; */
     display:block;
 }
 
@@ -190,7 +194,7 @@ auth-link{
 .schedule {
     border-bottom:3px solid lightgray;
     display: grid;
-    grid-auto-rows:minmax(10px, auto);
+    grid-auto-rows:minmax(5px, auto);
     grid-template-columns:1fr repeat(5, 3fr);
 
     div {
@@ -214,12 +218,15 @@ auth-link{
     .course-section {
         margin: 2px;
         background-color: #ddd;
-    }
-    .course-section p {
-        margin-top: 0;
-    }
-    .course-section p:first-of-type{
-        font-weight:bold;
+
+        p {
+             margin-top: 0;
+             margin-bottom: 0.25em;
+        }
+
+        :first-of-type, :nth-child(2) {
+            font-weight: bold;
+        }
     }
 
     .course0{
