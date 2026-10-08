@@ -20,6 +20,7 @@ function App() {
     //seperate useState to show another person's schdule, so it can work regardless of login status
     const [sharedUser, setSharedUser] = useState<string |null>(null);
     const [academicYear, setAcademicYear] = useState(2026);
+    const [years, setYears] = useState([2026])
     //sections cross all years and terms
     const [sections, setSections] = useState<Types.CourseSection[]>([]);
     const [filteredSections, setFilteredSections] = useState<Types.CourseSection[]>([]);
@@ -114,7 +115,7 @@ function App() {
         return <>
             <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
-            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 <AuthForm isLogin={true} onLogin={setUser} loadSignUp={loadSignUp} />
             </main>
@@ -125,7 +126,7 @@ function App() {
         return <>
             <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
-            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 <AuthForm isLogin={false} onLogin={setUser} loadLogin={loadLogin} />
             </main>
@@ -135,7 +136,7 @@ function App() {
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} 
-            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
                     <option value="A" selected>A term</option>
@@ -148,6 +149,11 @@ function App() {
                     <option value="E1">E1 term</option>
                     <option value="E2">E2 term</option>
                     <option value="E">Summer term</option>
+                </select>
+                <select class="centered" onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
+                    {years.map((year)=>(
+                        <option value={year} key={year}>{year}-{year+1}</option>
+                    ))}
                 </select>
                 <div class="sidescroller">
                     <Schedule sections={filteredSections} />
@@ -166,7 +172,7 @@ function App() {
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
-            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 {isCourses && <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
                     <option value="A" selected>A term</option>
@@ -180,6 +186,11 @@ function App() {
                     <option value="E2">E2 term</option>
                     <option value="E">Summer term</option>
                 </select>}
+                <select class="centered" onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
+                    {years.map((year)=>(
+                        <option value={year} key={year}>{year}-{year+1}</option>
+                    ))}
+                </select>
                 <div class="sidescroller">
                     {isCourses
                         ? (user ? 
