@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import * as Types from "../shared/types"
 import { filterCourseSections } from "../shared/util";
 import { Signal } from "@preact/signals";
@@ -11,6 +11,8 @@ export function UploadDialog(props: {
     setAcademicYear: (year: number) => void,
     loadIndex: () => void,
 }){
+    const [errorMsg, setErrorMsg] = useState('');
+
     // Sends the selected file to the server
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
@@ -22,12 +24,15 @@ export function UploadDialog(props: {
                 method: 'POST',
                 body: formData,
             });
-            const courseSections: Types.CourseSection[] = await response.json();
-            if (courseSections.length) {
+            const courseSections: Types.CourseSection[] | { error: string } = await response.json();
+            if ("error" in courseSections) {
+                setErrorMsg(courseSections.error);
+            } else if (courseSections.length) {
                 console.log(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setAcademicYear(courseSections[0].academicYearStart);
                 props.loadIndex()
+                closeDialog();
             }      
         }
     }
@@ -36,6 +41,7 @@ export function UploadDialog(props: {
 
     props.show.value = () => {
         dialogRef.current?.showModal();
+        setErrorMsg("");
     }
 
     const closeDialog = ()=>{
@@ -51,6 +57,7 @@ export function UploadDialog(props: {
                             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
                             Upload Schedule
                         </label>
+                        <p class='margin error'> {errorMsg}</p>
                     </div>
                     <button class="close-button" onClick={closeDialog}>X</button>
                 </div>

@@ -39,33 +39,24 @@ export function courseRoutes(app: express.Express) {
             //     mimeType
             // );
             if (!filename.includes("View_My_Courses") || mimeType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-                console.log(`Improper sheeet type given; filename of ${filename} or mimeType ${mimeType} was not accepted`);
                 res.status(400).json({
-                    error: `Improper sheeet type given; filename of ${filename} or mimeType ${mimeType} was not accepted`
+                    error: `Invalid Excel file`
                 });
                 return;
             }
             userCourses = await parseXLSX(file);
             if (!userCourses.length) {
-                console.log(`Unable to parse course in provided file: ${filename}`);
                 res.status(400).json({
-                    error: `Unable to parse course in provided file: ${filename}`
+                    error: `Unable to parse courses in provided file`
                 });
                 return;
             }
             const user = await getUserByToken(req.session?.token);
             if (!user) {
-                console.log("Went to no user route on parse")
-                // res.status(404).json({
-                //     error: "User not found"
-                // });
-                const courseYear: Number = userCourses[0].academicYear;
-
                 const courseSections = await getCourseSections(userCourses);
                 res.json(courseSections);
                 return;
             }else{
-                console.log("Went to user route on parse")
                 const courseYear: Number = userCourses[0].academicYear;
                 const newCourses: Types.CourseDBTuple[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
                 // console.log(newCourses);
