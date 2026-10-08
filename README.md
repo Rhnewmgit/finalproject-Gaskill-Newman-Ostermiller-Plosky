@@ -49,6 +49,8 @@ The excel file to be uploaded can be found at Workday by going to Student -> Aca
 - SheetJS
     - Allows extracting data from spreadsheets
     - Parses .xsls file into usable data
+- ical-generator
+    - Creates iCalendar (ICS) files for exporting into calendar services
 
 ## Responsibilities and Challenges
 
