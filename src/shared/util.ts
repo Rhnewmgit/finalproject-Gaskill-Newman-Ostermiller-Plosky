@@ -44,7 +44,7 @@ export function filterCourseSections(sections: CourseSection[], academicYear: nu
             return false;
         }
 
-        if (section.term !== term) {
+        if (section.term !== term && !termMappings[term].includes(section.term)) {
             return false;
         }
 

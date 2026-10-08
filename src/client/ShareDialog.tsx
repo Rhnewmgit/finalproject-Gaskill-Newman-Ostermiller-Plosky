@@ -39,11 +39,13 @@ export function ShareDialog(props : {user:string}){
     return (<>
             <button onClick={openDialog}>Share Schedule</button>
             <dialog ref={dialogRef} id='share'>
-                <div class='flex'>
-                    <button onClick={closeDialog}>X</button>
-                </div>
-                <p>Want to share your schedule with other users?</p>
-                <p>Click 'copy' and send them this link!</p>
+                <div class="flex">
+                    <div>
+                        <p>Want to share your schedule with other users?</p>
+                        <p>Click 'copy' and send them this link!</p>
+                    </div>
+                    <button class="close-button" onClick={closeDialog}>X</button>
+                    </div>
                 <input type='text' readonly value={link}/> 
                 {isCopied ? <button class='copied' onClick={copyLink}>Copied</button>
                     : <button onClick={copyLink}>Copy</button>}
