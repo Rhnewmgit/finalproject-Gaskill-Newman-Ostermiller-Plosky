@@ -19,6 +19,7 @@ export function Header(props: any){
                 console.log(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setAcademicYear(courseSections[0].academicYearStart);
+                props.loadIndex(event)
             }      
         }
     }

@@ -63,7 +63,10 @@ export function courseRoutes(app: express.Express) {
             const courseYear: Number = userCourses[0].academicYear;
             const newCourses: { code: String, section: String, academicYear: number }[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
             // console.log(newCourses);
-            await user.updateOne({ courses: newCourses });
+            //await user.updateOne({ courses: newCourses });
+            //const updatedUser = await User.findById(user._id)
+            user.set('courses', newCourses);
+            await user.save()
             const courseSections = await getCourseSections(user);
             res.json(courseSections);
         });
