@@ -28,7 +28,6 @@ export function UploadDialog(props: {
             if ("error" in courseSections) {
                 setErrorMsg(courseSections.error);
             } else if (courseSections.length) {
-                console.log(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setAcademicYear(courseSections[0].academicYearStart);
                 props.loadIndex()

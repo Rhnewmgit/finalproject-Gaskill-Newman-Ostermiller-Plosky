@@ -9,14 +9,7 @@ export function ShareDialog(props : {user:string}){
         try{
             await navigator.clipboard.writeText(link);
             setCopied(true)
-        }catch(error:unknown){
-            if(error instanceof Error){
-                console.error(error.message);
-            }
-            else{
-                console.error("Unknown error", error);
-            }
-        }
+        }catch(error:unknown){}
     }
 
     useEffect(() =>{

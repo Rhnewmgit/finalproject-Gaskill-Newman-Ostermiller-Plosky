@@ -32,12 +32,6 @@ export function courseRoutes(app: express.Express) {
         let userCourses: Types.CourseDBTuple[];
         bb.on('file', async (name, file, info) => {
             const { filename, encoding, mimeType } = info;
-            // console.log(
-            //     `File [${name}]: filename: %j, encoding: %j, mimeType: %j`,
-            //     filename,
-            //     encoding,
-            //     mimeType
-            // );
             if (!filename.includes("View_My_Courses") || mimeType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                 res.status(400).json({
                     error: `Invalid Excel file`
@@ -68,11 +62,7 @@ export function courseRoutes(app: express.Express) {
             }
         });
 
-        bb.on('close', () => {
-            // console.log('Done parsing form!');
-            // res.json(userCourses);
-            // res.writeHead(303, { Connection: 'close', Location: '/' });
-        });
+        bb.on('close', () => {});
         req.pipe(bb);
     });
 }

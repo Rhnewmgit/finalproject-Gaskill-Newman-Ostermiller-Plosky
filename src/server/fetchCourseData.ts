@@ -16,15 +16,6 @@ export async function fetchCourseData() {
         courseObjects.push(createCourseSection(course, yearcounts))
     });
 
-    // Print a selection of courses for verification purposes
-    // console.log("Selection of courses created:")
-    // console.log(courseObjects[0]) // Generic course
-    // console.log(courseObjects[155]) // Generic course
-    // console.log(courseObjects[71]) // AE 5232-B01: Online-asynchronous section
-    // console.log(courseObjects[66]) // AE 5132-D02: Online-synchronous section with no times or days (probably a mistake in the data)
-    // console.log(courseObjects[184]) // AS 4001-AL01: Section with different meeting times on different days
-    // console.log(courseObjects[2852]) // NEU 504-F01: Section with different meeting times throughout the semester
-
     console.log('Deleting old data...')
 
     // Removes all the old courses for the years associated with the incoming file.
@@ -103,7 +94,6 @@ function createCourseSection(course: CourseListingsCourseSection, yearcounts: { 
 
     // Add the year of this item to the year counts
     const yearIndex = yearcounts.findIndex((e) => e.year == startYear)
-    // console.log(startYear + ' at '+ yearIndex)
     if (yearIndex !== -1) {
         yearcounts[yearIndex].count++
     }
