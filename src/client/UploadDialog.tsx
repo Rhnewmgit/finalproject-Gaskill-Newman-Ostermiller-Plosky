@@ -57,7 +57,7 @@ export function UploadDialog(props: {
                             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
                             Upload Schedule
                         </label>
-                        (errorMsg.length ? <p class='margin error'> {errorMsg}</p> : null)
+                        {errorMsg && <p class='error'> {errorMsg}</p>}
                     </div>
                     <button class="close-button" onClick={closeDialog}>X</button>
                 </div>
