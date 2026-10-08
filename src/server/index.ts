@@ -2,11 +2,9 @@ import express from "express"
 import { join } from "path"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
-import busboy from "busboy";
 
 import { courseRoutes } from "./courses.js"
 import { fetchCourseData } from "./fetchCourseData.js";
-import parseXLSX from "./xlsxHandler.js"
 import cookieSession from 'cookie-session';
 import { authRoutes } from "./auth.js";
 import { CourseDBStatus } from "./models.js";
@@ -23,7 +21,7 @@ await mongoose.connect(uri)
 
 app.use(express.static(join(import.meta.dirname, "../../static")))
 app.use(express.json());
-app.use( cookieSession({
+app.use(cookieSession({
   name: 'session',
   //made using randomkeygen.com
   keys: [process.env.SESSION_KEY_1 as string, process.env.SESSION_KEY_2 as string]
@@ -32,7 +30,7 @@ authRoutes(app);
 courseRoutes(app);
 
 app.get("/{*a}", (req: express.Request, res: express.Response) => {
-	res.sendFile(join(import.meta.dirname, "../client/index.html"))
+  res.sendFile(join(import.meta.dirname, "../client/index.html"))
 })
 
 const courseDbStatus = await CourseDBStatus.findOne() || new CourseDBStatus({

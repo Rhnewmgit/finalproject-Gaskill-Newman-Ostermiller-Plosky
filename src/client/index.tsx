@@ -3,8 +3,9 @@ import { useEffect, useState } from "preact/hooks";
 import { exportScheduleImage } from "./exportScheduleImage.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
-import { Term } from "../shared/types.js";
+import { CourseSection, Term } from "../shared/types.js";
 import { Header } from "./Header.js";
+import { filterCourseSections } from "../shared/util"
 import { ShareDialog } from "./ShareDialog.jsx";
 
 function App() {
@@ -14,9 +15,10 @@ function App() {
     // enum value
     enum Page{Index, Login, SignUp}
     const [page, setPage] = useState(Page.Index)
-
     const [term, setTerm] = useState<Term>("A");
     const [user, setUser] = useState(null);
+    const [academicYear, setAcademicYear] = useState(2026);
+    const [sections, setSections] = useState<CourseSection[]>([]);
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the index page
@@ -38,6 +40,16 @@ function App() {
         console.log("Going to account creation page")
         setPage(Page.SignUp)
     }
+
+    useEffect(() => {
+        if (user) {
+            fetch("/api/courses/" + user).then(r => {
+            return r.json();
+        }).then(sections => {
+            setSections(filterCourseSections(sections, academicYear, term))
+        });
+        }
+    }, [user, academicYear, term]);
 
     //check login status on page load
     useEffect(() =>{
@@ -73,7 +85,8 @@ function App() {
         // Otherwise loads the index page
         if(page != Page.Index){setPage(Page.Index)}
         return <>
-            <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} />
+            <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
             <main>
                 <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
                     <option value="A" selected>A term</option>
@@ -89,7 +102,7 @@ function App() {
                 </select>
                 <div class="sidescroller">
                     {user
-                        ? <Schedule user={user} term={term} academicYear={2026} />
+                        ? <Schedule sections={sections} />
                         : <p class='centered'>Please log in to see your schedule.</p>
                     }
                 </div>
