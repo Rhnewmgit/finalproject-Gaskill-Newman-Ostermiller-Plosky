@@ -27,6 +27,7 @@ export function AuthForm(props: any){
 
     return <>
         {props.isLogin ? <h2>Log In</h2> : <h2>Sign Up</h2>}
+        {errorMsg && <p class='centered error'>{errorMsg}</p>}
         <form id="auth-form" onSubmit={handleSubmit}>
             <label for='username'>Username:</label>
             <input type='text' name='username' id="username" autocomplete="username" />
@@ -50,7 +51,6 @@ export function AuthForm(props: any){
             <div class='centered-text'>
                 <button class='fake-link' type='button' onClick={props.loadLogin}>Return to login page</button>
             </div> 
-        }   
-        <p class='margin error'> {errorMsg}</p>
+        }
     </>
 }

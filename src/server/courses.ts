@@ -59,7 +59,6 @@ export function courseRoutes(app: express.Express) {
             }else{
                 const courseYear: Number = userCourses[0].academicYear;
                 const newCourses: Types.CourseDBTuple[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
-                // console.log(newCourses);
                 //await user.updateOne({ courses: newCourses });
                 //const updatedUser = await User.findById(user._id)
                 user.set('courses', newCourses);

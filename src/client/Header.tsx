@@ -8,9 +8,13 @@ export function Header(props: {
     term: Types.Term,
     academicYear: number,
     user: string | null,
+    sections: Types.CourseSection[],
+    years: number[],
     setSections: (sections: Types.CourseSection[]) => void,
     setAcademicYear: (year: number) => void,
     setUser: (user: string | null) => void,
+    setYears: (years: number[])=>void,
+    setIsCourses: (isCourses: boolean) => void,
     loadIndex: () => void,
     loadLogin: () => void
 }) {
@@ -27,6 +31,7 @@ export function Header(props: {
       		props.setUser(null)
     	})	
         props.setSections([])
+        props.setIsCourses(false)
     }
 
     return <>
