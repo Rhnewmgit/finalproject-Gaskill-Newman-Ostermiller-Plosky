@@ -5,7 +5,7 @@
 - James Ostermiller
 - Kyle Plosky
 
-Try it out at (Render link)
+Try it out at https://wpi-schedule-viewer.onrender.com/
 Watch a demonstration of the site in action at (YT Link)
 
 ---
