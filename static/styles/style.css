@@ -3,6 +3,8 @@
     --wpi-red:#AC2B37;
     --wpi-gray:#A9B0B7;
     --dark-red:#630811;
+    --error-color:#dfb156;
+    --error-color-2:#ab802a;
 }
 
 /* DEFAULTS AND PAGE CONTAINERS */
@@ -98,6 +100,14 @@ input[type="file"]{
     &:focus{
         background-color:darkgreen;
     }
+}
+.error{
+    background-color:var(--error-color);
+    padding:.5rem;
+    border-radius:5px;
+    border:2px solid var(--error-color-2);
+    width:fit-content;
+    margin-bottom:1rem;
 }
 
 /* MAIN CONTENT WRAPPERS */
