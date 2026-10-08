@@ -1,13 +1,15 @@
+export type CourseDBTuple = {
+    code: string, //  ex. "CS 4241"
+    section: string, // ex. "A01"
+    academicYear: Number, // Year - 1 for terms excluding A, B, and AB
+}
+
 export type User = {
     username: string
     password: string
     token: string
     tokenExpiry: number
-    courses: {
-        code: string,
-        section: string,
-        academicYear: number
-    }[]
+    courses: CourseDBTuple[]
 }
 
 export type Term = "A" | "B" | "C" | "D" | "E1" | "E2" | "F" | "S" | "E" | "G";
