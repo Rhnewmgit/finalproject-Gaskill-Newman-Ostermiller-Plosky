@@ -7,11 +7,7 @@ const canvasHeight = 600;
 const timeColumnWidth = 100;
 const dayColumnWidth = (canvasWidth - timeColumnWidth) / days.length;
 
-export async function exportScheduleImage(user: string, academicYear: number, term: Term) {
-    const sections = filterCourseSections(await fetch("/api/courses/" + user).then(r => {
-        return r.json();
-    }), academicYear, term);
-
+export async function exportScheduleImage(sections){
     const extremes = mostExtremeTimes(sections);
     const hours: number[] = [];
     for (let h = Math.floor(extremes.earliest / 60); h < Math.ceil(extremes.latest / 60); h++) {

@@ -170,23 +170,29 @@ function App() {
                         ? (user ? 
                             <Schedule sections={sections} />
                             : <>
-                                <p>Log in to save your schedule</p>
+                                <p>Log in to save your schedule.</p>
                                 <Schedule sections={sections}/>
                             </>)
-                        : (<p class='centered'>
-                            You can export your courses as an Excel file found on Workday.
-                            Go to your academics hub, and select View Details under Current Courses.
-                            On the top right of that page, click the button to obtain the excel file.
-                            And then you can upload the file using the Upload Schedule button.
-                        </p>)
+                        : (<>
+                            <p>You can export your courses as an Excel file found on Workday.
+                            Go to your academics hub, and select View Details under Current Courses.</p>
+
+                            <p>The button to download the excel file will either be at the top right of the page,
+                            or directly under the "View Courses" header. Don't use the semester-specific
+                            excel download button, only the full-year one will work!</p>
+
+                            <p>Then you can upload the file using the Upload Schedule button at the top of this page.</p>
+                        </>)
                     }
                 </div>
-                {user && <div class='centered button-div'>
-                    <button onClick={async () => {
-                        await exportScheduleImage(user, 2026, term);
-                    }}>Export Image</button>
-                    <ShareDialog user={user}/>
-                </div>}
+                <div class='centered button-div'>
+                    {sections.length > 0 && <>
+                        <button onClick={async () => {
+                            await exportScheduleImage(sections);
+                        }}>Export Image</button>
+                        {user && <ShareDialog user={user}/>}
+                    </>}
+                </div>
             </main>
         </>
     }
