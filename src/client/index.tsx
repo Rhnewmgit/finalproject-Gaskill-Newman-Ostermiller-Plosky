@@ -22,7 +22,11 @@ function App() {
     //seperate useState to show another person's schdule, so it can work regardless of login status
     const [sharedUser, setSharedUser] = useState<string |null>(null);
     const [academicYear, setAcademicYear] = useState(2026);
+    const [years, setYears] = useState([2026])
+    //sections cross all years and terms
     const [sections, setSections] = useState<Types.CourseSection[]>([]);
+    const [filteredSections, setFilteredSections] = useState<Types.CourseSection[]>([]);
+    const [isCourses, setIsCourses] = useState(false)
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the index page
@@ -85,10 +89,16 @@ function App() {
             fetch("/api/courses/" + userToFetch).then(r => {
             return r.json();
         }).then((sections: Types.CourseSection[]) => {
-            setSections(filterCourseSections(sections, academicYear, term))
+            setIsCourses(true)
+            //setSections(filterCourseSections(sections, academicYear, term))
+            setSections(sections)
         });
         }
-    }, [user, sharedUser, academicYear, term]);
+    }, [user, sharedUser]);
+
+    useEffect(()=>{
+        setFilteredSections(filterCourseSections(sections, academicYear, term))
+    },[sections, academicYear, term])
 
     //check login status on page load
     useEffect(() =>{
@@ -105,7 +115,9 @@ function App() {
     if(!user && page == Page.Login){
         // Loads the login page only if the user is not logged in
         return <>
-            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections} />
+            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 <AuthForm isLogin={true} onLogin={setUser} loadSignUp={loadSignUp} />
             </main>
@@ -114,7 +126,9 @@ function App() {
     else if(!user && page == Page.SignUp){
         // Loads the account creation page only if the user is not logged in
         return <>
-            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections} />
+            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 <AuthForm isLogin={false} onLogin={setUser} loadLogin={loadLogin} />
             </main>
@@ -123,11 +137,17 @@ function App() {
     else if(page == Page.Shared){
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
-            term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
+            term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
+                <select class="centered" onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
+                    {years.map((year)=>(
+                        <option value={year} key={year}>{year}-{year+1}</option>
+                    ))}
+                </select>
                 <TermSelect setTerm={setTerm} />
                 <div class="sidescroller">
-                    <Schedule sections={sections} />
+                    <Schedule sections={filteredSections} />
                 </div>
             </main>
         </>
@@ -142,16 +162,23 @@ function App() {
         
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
-            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
-                <TermSelect setTerm={setTerm} />
+                <select class="centered" onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
+                    {years.map((year)=>(
+                        <option value={year} key={year}>{year}-{year+1}</option>
+                    ))}
+                </select>
+                {isCourses && <TermSelect setTerm={setTerm} />}
+                
                 <div class="sidescroller">
-                    {sections.length >0
+                    {isCourses
                         ? (user ? 
-                            <Schedule sections={sections} />
+                            <Schedule sections={filteredSections} />
                             : <>
                                 <p class='centered-text'>Log in to save your schedule.</p>
-                                <Schedule sections={sections}/>
+                                <Schedule sections={filteredSections}/>
                             </>)
                         : (<>
                             <p>You can export your courses as an Excel file found on Workday.
@@ -166,12 +193,12 @@ function App() {
                     }
                 </div>
                 <div class='centered button-div'>
-                    {sections.length > 0 && <>
+                    {filteredSections.length > 0 && <>
                         <button onClick={async () => {
-                            await exportScheduleImage(sections);
+                            await exportScheduleImage(filteredSections);
                         }}>Export Image</button>
                         <button onClick={() => {
-                            exportIcal(sections);
+                            exportIcal(filteredSections);
                         }}>Export for Calendar</button>
                         {user && <ShareDialog user={user}/>}
                     </>}
