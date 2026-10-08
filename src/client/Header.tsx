@@ -44,6 +44,7 @@ export function Header(props: {
     		.then(json => {
       		props.setUser(null)
     	})	
+        props.setSections([])
     }
 
     return <>

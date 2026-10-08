@@ -166,9 +166,19 @@ function App() {
                     <option value="E">Summer term</option>
                 </select>
                 <div class="sidescroller">
-                    {user
-                        ? <Schedule sections={sections} />
-                        : <p class='centered'>Please log in to see your schedule.</p>
+                    {sections.length >0
+                        ? (user ? 
+                            <Schedule sections={sections} />
+                            : <>
+                                <p>Log in to save your schedule</p>
+                                <Schedule sections={sections}/>
+                            </>)
+                        : (<p class='centered'>
+                            You can export your courses as an Excel file found on Workday.
+                            Go to your academics hub, and select View Details under Current Courses.
+                            On the top right of that page, click the button to obtain the excel file.
+                            And then you can upload the file using the Upload Schedule button.
+                        </p>)
                     }
                 </div>
                 {user && <div class='centered button-div'>
