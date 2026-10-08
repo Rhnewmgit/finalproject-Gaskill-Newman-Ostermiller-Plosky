@@ -7,7 +7,6 @@ import { CourseSection, Term } from "../shared/types.js";
 import { Header } from "./Header.js";
 import { filterCourseSections } from "../shared/util"
 import { ShareDialog } from "./ShareDialog.jsx";
-import { share } from "node:stream/iter";
 
 function App() {
 
