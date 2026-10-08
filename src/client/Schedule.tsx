@@ -52,10 +52,11 @@ export function Schedule(props: {sections: CourseSection[]}) {
                         gridRow: timeToRow(meeting.startTime, extremes.earliest) + " / " + timeToRow(meeting.endTime, extremes.earliest),
                         gridColumn: meeting.day + 2
                     }}>
+                        <p>{section.code}-{section.section}</p>
                         <p>{section.name}</p>
-                        <p>{section.type}</p>
-                        <p>{section.professors.join(", ")}</p>
                         <p>{meeting.location}</p>
+                        <p>{section.professors.join(", ")}</p>
+                        <p>{section.type}</p>
                     </div>
                 })}
             </>

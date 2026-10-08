@@ -148,7 +148,7 @@ main{
 .schedule {
     border-bottom:3px solid lightgray;
     display: grid;
-    grid-auto-rows:minmax(10px, auto);
+    grid-auto-rows:minmax(5px, auto);
     grid-template-columns:1fr repeat(5, 3fr);
 
     div {
@@ -172,12 +172,15 @@ main{
     .course-section {
         margin: 2px;
         background-color: #ddd;
-    }
-    .course-section p {
-        margin-top: 0;
-    }
-    .course-section p:first-of-type{
-        font-weight:bold;
+
+        p {
+             margin-top: 0;
+             margin-bottom: 0.25em;
+        }
+
+        :first-of-type, :nth-child(2) {
+            font-weight: bold;
+        }
     }
 
     .course0{

@@ -73,10 +73,14 @@ export async function exportScheduleImage(user: string, academicYear: number, te
             ctx.fillRect(x + 2, y + 2, dayColumnWidth - 4, heightPerMinute * (meeting.endTime - meeting.startTime) - 4)
             ctx.fillStyle = "#000";
             y += 5;
+            ctx.font = "bold 14px Arial";
+            y = wrapText(`${section.code}-${section.section}`, x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
             y = wrapText(section.name, x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
-            y = wrapText(section.type, x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
+            ctx.font = "14px Arial";
+            y = wrapText(meeting.location || "", x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx);
             y = wrapText(section.professors.join(", "), x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
-            wrapText(meeting.location || "", x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx);
+            y = wrapText(section.type, x + 5, y, dayColumnWidth - 10, yEnd, 18, ctx) + 2;
+            
         });
     })
 
