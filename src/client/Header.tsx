@@ -6,9 +6,11 @@ export function Header(props: {
     term: Types.Term,
     academicYear: number,
     user: string | null,
+    sections: Types.CourseSection[],
     setSections: (sections: Types.CourseSection[]) => void,
     setAcademicYear: (year: number) => void,
     setUser: (user: string | null) => void,
+    setIsCourses: (isCourses: boolean) => void,
     loadIndex: () => void,
     loadLogin: () => void
 }) {
@@ -26,10 +28,17 @@ export function Header(props: {
             const courseSections: Types.CourseSection[] = await response.json();
             console.log(props.academicYear, props.term)
             if (courseSections.length) {
+                const newAcademicYear = courseSections[0].academicYearStart
                 console.log(filterCourseSections(courseSections, props.academicYear, props.term));
-                props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
-                props.setAcademicYear(courseSections[0].academicYearStart);
+                if (!props.loggedIn){
+                    props.setSections(courseSections);
+                }else{
+                    const allSections = props.sections.filter(course => course.academicYearStart != newAcademicYear).concat(courseSections);
+                    props.setSections(allSections)
+                }
+                props.setAcademicYear(newAcademicYear);
                 props.loadIndex()
+                props.setIsCourses(true)
             }      
         }
     }
@@ -45,6 +54,7 @@ export function Header(props: {
       		props.setUser(null)
     	})	
         props.setSections([])
+        props.setIsCourses(false)
     }
 
     return <>

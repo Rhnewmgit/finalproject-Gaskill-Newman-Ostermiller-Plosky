@@ -20,7 +20,10 @@ function App() {
     //seperate useState to show another person's schdule, so it can work regardless of login status
     const [sharedUser, setSharedUser] = useState<string |null>(null);
     const [academicYear, setAcademicYear] = useState(2026);
+    //sections cross all years and terms
     const [sections, setSections] = useState<Types.CourseSection[]>([]);
+    const [filteredSections, setFilteredSections] = useState<Types.CourseSection[]>([]);
+    const [isCourses, setIsCourses] = useState(false)
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the index page
@@ -83,10 +86,16 @@ function App() {
             fetch("/api/courses/" + userToFetch).then(r => {
             return r.json();
         }).then((sections: Types.CourseSection[]) => {
-            setSections(filterCourseSections(sections, academicYear, term))
+            setIsCourses(true)
+            //setSections(filterCourseSections(sections, academicYear, term))
+            setSections(sections)
         });
         }
-    }, [user, sharedUser, academicYear, term]);
+    }, [user, sharedUser]);
+
+    useEffect(()=>{
+        setFilteredSections(filterCourseSections(sections, academicYear, term))
+    },[sections, academicYear, term])
 
     //check login status on page load
     useEffect(() =>{
@@ -103,7 +112,9 @@ function App() {
     if(!user && page == Page.Login){
         // Loads the login page only if the user is not logged in
         return <>
-            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections} />
+            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
             <main>
                 <AuthForm isLogin={true} onLogin={setUser} loadSignUp={loadSignUp} />
             </main>
@@ -112,7 +123,9 @@ function App() {
     else if(!user && page == Page.SignUp){
         // Loads the account creation page only if the user is not logged in
         return <>
-            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections} />
+            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
             <main>
                 <AuthForm isLogin={false} onLogin={setUser} loadLogin={loadLogin} />
             </main>
@@ -121,7 +134,8 @@ function App() {
     else if(page == Page.Shared){
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
-            term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
+            term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
             <main>
                 <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
                     <option value="A" selected>A term</option>
@@ -136,7 +150,7 @@ function App() {
                     <option value="E">Summer term</option>
                 </select>
                 <div class="sidescroller">
-                    <Schedule sections={sections} />
+                    <Schedule sections={filteredSections} />
                 </div>
             </main>
         </>
@@ -151,9 +165,10 @@ function App() {
         
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
-            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
+            term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
+            setSections={setSections} sections={sections} setIsCourses={setIsCourses}/>
             <main>
-                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
+                {isCourses && <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
                     <option value="A" selected>A term</option>
                     <option value="B">B term</option>
                     <option value="F">Fall Semester</option>
@@ -164,26 +179,27 @@ function App() {
                     <option value="E1">E1 term</option>
                     <option value="E2">E2 term</option>
                     <option value="E">Summer term</option>
-                </select>
+                </select>}
                 <div class="sidescroller">
-                    {sections.length >0
+                    {isCourses
                         ? (user ? 
-                            <Schedule sections={sections} />
+                            <Schedule sections={filteredSections} />
                             : <>
                                 <p>Log in to save your schedule</p>
-                                <Schedule sections={sections}/>
+                                <Schedule sections={filteredSections}/>
                             </>)
                         : (<p class='centered'>
                             You can export your courses as an Excel file found on Workday.
                             Go to your academics hub, and select View Details under Current Courses.
-                            On the top right of that page, click the button to obtain the excel file.
+                            On the top right of that page, or under the "View My Courses" heading,
+                            click the button to obtain the excel file.
                             And then you can upload the file using the Upload Schedule button.
                         </p>)
                     }
                 </div>
                 {user && <div class='centered button-div'>
                     <button onClick={async () => {
-                        await exportScheduleImage(user, 2026, term);
+                        await exportScheduleImage(user, academicYear, term);
                     }}>Export Image</button>
                     <ShareDialog user={user}/>
                 </div>}
