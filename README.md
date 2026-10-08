@@ -46,7 +46,7 @@ The excel file to be uploaded can be found at Workday by going to Student -> Aca
 - busboy
     - Parses HTML form data
     - Used when sending the Excel file from the client to the server
-- Sheet Js
+- SheetJS
     - Allows extracting data from spreadsheets
     - Parses .xsls file into usable data
 - ical-generator
@@ -56,9 +56,23 @@ The excel file to be uploaded can be found at Workday by going to Student -> Aca
 
 - Noah Gaskill
     -
+
 - Richard Newman
-    -
+    - My responsibilities were mainly the logic for uploading the Excel file schedule, including:
+        - Sending the file to the server
+        - Parsing the excel file into usable data
+        - Comparing that data with the information on the Database from the WPI website to get the full course section information, which can then be sent back to the user
+        - Refactoring some Preact objects to change the props provided to the Schedule to allow for the course sections to be provided directly.
+    - Challenges
+        - Since I chose the creative project for assignment 4, I did not have as much React experience and needed time to get used to Preact
+        - I also needed to accustom myself to Typescript, which I occasionally had to fight with
+        - There were many very unclear problems that took a ton of time to debug, namely:
+            - I did not realize at first that esbuild needed to have node packages specified as external, since otherwise errors occur when attempting to compile
+            - I was unaware that files needed to be sent as type FormData, then needed to learn how to use a library (busboy) to parse the FormData
+            - SheetJS gave me a bunch of trouble actually retrieving the data; some built-in functions (XLSX.utils.sheet_to_json, the "!data" field of a workbook specified as dense) never seemed to work no matter what I tried, but when the raw object was clearly filled with data and a test spreadsheet could be read just fine. The issue was that the Excel spreadsheet provided by Workday has a strange issue where the metadata has the number of rows set to 1, despite clearly having significantly more than that, so the nodim option needed to be used when parsing the workbook to force SheetJS to figure out the dimensions of the spreadsheet manually.
+
 - James Ostermiller
     -
+
 - Kyle Plosky
     -

@@ -66,6 +66,11 @@ input[type="file"]{
 .centered{
     margin:0 auto;
 }
+.centered-text{
+    text-align:center;
+    margin-top:1rem;
+    display:block;
+}
 .sidescroller{
     max-width:100%;
     overflow-x:auto;
@@ -126,6 +131,11 @@ main{
 }
 
 /* MAIN PAGE */
+.sidescroller p{
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+}
 .button-div{
     width:max-content;
 
@@ -178,12 +188,6 @@ dialog{
     button{
         grid-column-start:2;
     }
-}
-auth-link{
-    text-align:center;
-    margin-top:1rem;
-    /* width:100%; */
-    display:block;
 }
 
 /* SCHEDULE GRID */
