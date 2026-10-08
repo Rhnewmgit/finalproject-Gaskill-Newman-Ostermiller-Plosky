@@ -1,6 +1,7 @@
 import { render } from "preact"
 import { useEffect, useState } from "preact/hooks";
 import { exportScheduleImage } from "./exportScheduleImage.js"
+import { exportIcal } from "./exportIcal.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
 import * as Types from "../shared/types.js";
@@ -185,6 +186,9 @@ function App() {
                     <button onClick={async () => {
                         await exportScheduleImage(user, 2026, term);
                     }}>Export Image</button>
+                    <button onClick={() => {
+                        exportIcal(sections);
+                    }}>Export for Calendar</button>
                     <ShareDialog user={user}/>
                 </div>}
             </main>
