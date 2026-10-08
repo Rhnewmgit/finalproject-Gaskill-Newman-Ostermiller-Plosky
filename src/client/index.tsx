@@ -6,16 +6,19 @@ import { AuthForm } from "./AuthForm.js"
 import { CourseSection, Term } from "../shared/types.js";
 import { Header } from "./Header.js";
 import { filterCourseSections } from "../shared/util"
+import { ShareDialog } from "./ShareDialog.jsx";
 
 function App() {
 
     // To add another page, add its name to the Page enum and logic to the page
     // handling section below. To switch to the page, update useState to the
     // enum value
-    enum Page{Index, Login, SignUp}
+    enum Page{Index, Login, SignUp, Shared}
     const [page, setPage] = useState(Page.Index)
     const [term, setTerm] = useState<Term>("A");
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<string |null>(null);
+    //seperate useState to show another person's schdule, so it can work regardless of login status
+    const [sharedUser, setSharedUser] = useState<string |null>(null);
     const [academicYear, setAcademicYear] = useState(2026);
     const [sections, setSections] = useState<CourseSection[]>([]);
 
@@ -24,12 +27,15 @@ function App() {
     function loadIndex(event: MouseEvent): void {
         console.log("Going to index page")
         setPage(Page.Index)
+        history.pushState({}, "", "/")
+        if (sharedUser) setSharedUser(null)
     }
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the login page
     function loadLogin(event: MouseEvent): void {
         console.log("Going to login page")
+        history.replaceState({}, "", "/");
         setPage(Page.Login)
     }
 
@@ -37,18 +43,48 @@ function App() {
     // function for buttons which go to the account creation page
     function loadSignUp(event: MouseEvent): void{
         console.log("Going to account creation page")
+        history.replaceState({}, "", "/");
         setPage(Page.SignUp)
     }
 
+    // This function can be passed down to components and set as an onclick
+    // function for buttons which go to the shared schedule page
+    function loadShared(event: MouseEvent): void{
+        console.log("Going to a shared schedule page")
+        history.pushState({},"",`/user/${sharedUser}`)
+        setPage(Page.Shared)
+    }
+
+    const setPageWithUrL =()=>{
+        //produces the following array: [ "", "user", "6ac6e94ce0690abe701ae14a" ] or [""]
+        const pathArray: string[] = window.location.pathname.split("/")
+        if(pathArray.length === 3 && pathArray[1] == 'user'){
+            setPage(Page.Shared)
+            setSharedUser(pathArray[2])
+        }
+        else{
+            setPage(Page.Index)
+            setSharedUser(null)
+        }
+
+    }
+    //use effect to parse the url
+    useEffect(()=>{
+        setPageWithUrL();
+        window.addEventListener('popstate', setPageWithUrL)
+        return () => window.removeEventListener("popstate", setPageWithUrL);
+    },[])
+
     useEffect(() => {
-        if (user) {
-            fetch("/api/courses/" + user).then(r => {
+        const userToFetch =  sharedUser || user
+        if (userToFetch) {
+            fetch("/api/courses/" + userToFetch).then(r => {
             return r.json();
         }).then(sections => {
             setSections(filterCourseSections(sections, academicYear, term))
         });
         }
-    }, [user, academicYear, term]);
+    }, [user, sharedUser, academicYear, term]);
 
     //check login status on page load
     useEffect(() =>{
@@ -80,9 +116,37 @@ function App() {
             </main>
         </>
     }
+    else if(page == Page.Shared){
+        return <>
+            <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
+            term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
+            <main>
+                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
+                    <option value="A" selected>A term</option>
+                    <option value="B">B term</option>
+                    <option value="F">Fall Semester</option>
+                    <option value="C">C term</option>
+                    <option value="D">D term</option>
+                    <option value="S">Spring Semester</option>
+                    <option value="G">Graduate Spring Late Start</option>
+                    <option value="E1">E1 term</option>
+                    <option value="E2">E2 term</option>
+                    <option value="E">Summer term</option>
+                </select>
+                <div class="sidescroller">
+                    <Schedule sections={sections} />
+                </div>
+            </main>
+        </>
+    }
     else{
         // Otherwise loads the index page
-        if(page != Page.Index){setPage(Page.Index)}
+        if(page != Page.Index){
+            setPage(Page.Index)
+            history.pushState({}, "", "/")
+            if (sharedUser) setSharedUser(null)
+        }
+        
         return <>
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
@@ -105,9 +169,12 @@ function App() {
                         : <p class='centered'>Please log in to see your schedule.</p>
                     }
                 </div>
-                <button class='centered' onClick={async () => {
-                    await exportScheduleImage(user, academicYear, term);
-                }}>Export Image</button>
+                {user && <div class='centered button-div'>
+                    <button onClick={async () => {
+                        await exportScheduleImage(user, 2026, term);
+                    }}>Export Image</button>
+                    <ShareDialog user={user}/>
+                </div>}
             </main>
         </>
     }

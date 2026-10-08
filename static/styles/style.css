@@ -134,11 +134,14 @@ main{
         grid-column-start:2;
     }
 }
-auth-link{
+.auth-link{
     text-align:center;
     margin-top:1rem;
     /* width:100%; */
     display:block;
+}
+.error{
+    color:red;
 }
 
 /* SCHEDULE GRID */
@@ -213,4 +216,48 @@ auth-link{
     .course11{
         background-color:rgb(163, 101, 126);
     }
+}
+
+/* SHARING */
+.button-div{
+    width:25%;
+    display:flex;
+    justify-content: space-around;
+    button{
+        display:inline;
+    }
+}
+
+dialog{
+    width: 40%;
+    height: 25%;
+    border:white;
+    border-radius: 25px;
+    input{
+        field-sizing:content;
+    }
+    button{
+        margin-left:auto;
+        margin-right:0;
+        padding-top: 0.4em;
+        padding-bottom: 0.4em;
+        &:focus{
+        /* Focus-within styles .file-input label when the input is focused */
+            outline:3px dotted var(--wpi-gray);
+            background-color:darkgreen;
+        }
+    }
+    input{
+        margin-right:0.4em;
+    }
+}
+.copied{
+        background-color: rgb(1, 210, 1);
+}
+body:has(dialog[open]){
+    overflow:hidden;
+}
+.flex{
+    display: flex;
+    align-content: flex-end;
 }

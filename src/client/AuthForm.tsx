@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks"
 
-export function AuthForm(props){
+export function AuthForm(props: any){
     const [errorMsg, setErrorMsg] = useState('');
 
     const handleSubmit = async(event:Event) => {
@@ -42,15 +42,15 @@ export function AuthForm(props){
             <button type="submit">{props.isLogin? 'Log In' : 'Sign Up'}</button>
         </form>
         {props.isLogin ?
-            <auth-link>
+            <div class='auth-link'>
                 No account yet?
                 <button class='fake-link' type='button' onClick={props.loadSignUp}>Sign up here!</button>
-            </auth-link> 
+            </div> 
         :
-            <auth-link>
+            <div class='auth-link'>
                 <button class='fake-link' type='button' onClick={props.loadLogin}>Return to login page</button>
-            </auth-link>
+            </div> 
         }   
-        <p> {errorMsg}</p>
+        <p class='margin error'> {errorMsg}</p>
     </>
 }

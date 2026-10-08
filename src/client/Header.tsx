@@ -1,6 +1,4 @@
-import { useState } from "preact/hooks"
 import { filterCourseSections } from "../shared/util"
-import { CourseSection, Term } from "../shared/types.js";
 
 export function Header(props: any){
     // Sends the selected file to the server
@@ -19,6 +17,7 @@ export function Header(props: any){
                 console.log(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setAcademicYear(courseSections[0].academicYearStart);
+                props.loadIndex(event)
             }      
         }
     }

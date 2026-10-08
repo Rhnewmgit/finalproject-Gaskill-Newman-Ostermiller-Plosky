@@ -1,6 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
-import { CourseSection, Term } from "../shared/types"
-import { mostExtremeTimes, formatTime, filterCourseSections } from "../shared/util"
+import { CourseSection } from "../shared/types"
+import { mostExtremeTimes, formatTime } from "../shared/util"
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
