@@ -27,7 +27,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the index page
     function loadIndex(): void {
-        console.log("Going to index page")
+        // console.log("Going to index page")
         setPage(Page.Index)
         history.pushState({}, "", "/")
         if (sharedUser) setSharedUser(null)
@@ -36,7 +36,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the login page
     function loadLogin(): void {
-        console.log("Going to login page")
+        // console.log("Going to login page")
         history.replaceState({}, "", "/");
         setPage(Page.Login)
     }
@@ -44,7 +44,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the account creation page
     function loadSignUp(): void{
-        console.log("Going to account creation page")
+        // console.log("Going to account creation page")
         history.replaceState({}, "", "/");
         setPage(Page.SignUp)
     }
@@ -52,7 +52,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the shared schedule page
     function loadShared(): void{
-        console.log("Going to a shared schedule page")
+        // console.log("Going to a shared schedule page")
         history.pushState({},"",`/user/${sharedUser}`)
         setPage(Page.Shared)
     }
@@ -79,7 +79,7 @@ function App() {
 
     useEffect(() => {
         const userToFetch =  sharedUser || user
-        console.log("Fetching courses for the user")
+        // console.log("Fetching courses for the user")
 
         if (userToFetch) {
             fetch("/api/courses/" + userToFetch).then(r => {
