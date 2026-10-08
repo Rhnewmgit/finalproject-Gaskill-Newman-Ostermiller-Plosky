@@ -1,17 +1,12 @@
 import XLSX from "xlsx";
 import { buffer } from "stream/consumers"
 import Stream from "stream"
+import { CourseDBTuple } from "../shared/types.js";
 
 type UserCourse = {
     section: string, // ex. "CS 4342-A01"
     year: number // ex 2026
 };
-
-export type CourseDBTuple = {
-    code: String, //  ex. "CS 4241"
-    section: String, // ex. "A01"
-    academicYear: Number, // Year - 1 for terms excluding A, B, and AB
-}
 
 /**
  * 

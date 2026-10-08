@@ -1,7 +1,7 @@
 import express from "express"
 import { CourseSection, User } from "./models.js"
 import busboy from "busboy";
-import { parseXLSX, type CourseDBTuple } from "./xlsxHandler.js";
+import { parseXLSX } from "./xlsxHandler.js";
 import { getUserByToken } from "./auth.js";
 import * as Types from "../shared/types.js";
 
@@ -29,7 +29,7 @@ export function courseRoutes(app: express.Express) {
     // Handles receiving the .xlsx file from the user
     app.post("/api/courses", (req: express.Request, res: express.Response) => {
         const bb = busboy({ headers: req.headers, });
-        let userCourses: CourseDBTuple[];
+        let userCourses: Types.CourseDBTuple[];
         bb.on('file', async (name, file, info) => {
             const { filename, encoding, mimeType } = info;
             // console.log(
@@ -61,13 +61,13 @@ export function courseRoutes(app: express.Express) {
                 // });
                 const courseYear: Number = userCourses[0].academicYear;
 
-                const newCourses: { code: String, section: String, academicYear: Number }[] = userCourses.map((course)=>{return {code: course.code, section: course.section, academicYear:course.academicYear}}).filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
+                const newCourses: Types.CourseDBTuple[] = userCourses.map((course)=>{return {code: course.code, section: course.section, academicYear:course.academicYear}}).filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
                 res.json(newCourses);
                 return;
             }else{
                 console.log("Went to user route on parse")
                 const courseYear: Number = userCourses[0].academicYear;
-                const newCourses: { code: String, section: String, academicYear: number }[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
+                const newCourses: Types.CourseDBTuple[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
                 // console.log(newCourses);
                 //await user.updateOne({ courses: newCourses });
                 //const updatedUser = await User.findById(user._id)
@@ -91,9 +91,9 @@ export async function getCourseSections(user: Types.User): Promise<Types.CourseS
     return await CourseSection.find({
         $or: user.courses.map(course => {
             return {
-                code: course.code,
-                section: course.section,
-                academicYearStart: course.academicYear
+                code: course.code as any,
+                section: course.section as any,
+                academicYearStart: course.academicYear as any
             }
         })
     })

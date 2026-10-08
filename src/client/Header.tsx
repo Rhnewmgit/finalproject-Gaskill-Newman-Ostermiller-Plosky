@@ -1,6 +1,17 @@
+import * as Types from "../shared/types";
 import { filterCourseSections } from "../shared/util"
 
-export function Header(props: any){
+export function Header(props: { 
+    loggedIn: boolean,
+    term: Types.Term,
+    academicYear: number,
+    user: string | null,
+    setSections: (sections: Types.CourseSection[]) => void,
+    setAcademicYear: (year: number) => void,
+    setUser: (user: string | null) => void,
+    loadIndex: () => void,
+    loadLogin: () => void
+}) {
     // Sends the selected file to the server
     async function handleFileInput(event: Event) {
         const input = event.target as HTMLInputElement;
@@ -12,12 +23,13 @@ export function Header(props: any){
                 method: 'POST',
                 body: formData,
             });
-            const courseSections = await response.json();
+            const courseSections: Types.CourseDBTuple[] = await response.json();
+            console.log(props.academicYear, props.term)
             if (courseSections.length) {
                 console.log(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setAcademicYear(courseSections[0].academicYearStart);
-                props.loadIndex(event)
+                props.loadIndex()
             }      
         }
     }

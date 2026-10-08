@@ -3,7 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { exportScheduleImage } from "./exportScheduleImage.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
-import { CourseSection, Term } from "../shared/types.js";
+import * as Types from "../shared/types.js";
 import { Header } from "./Header.js";
 import { filterCourseSections } from "../shared/util"
 import { ShareDialog } from "./ShareDialog.jsx";
@@ -15,16 +15,16 @@ function App() {
     // enum value
     enum Page{Index, Login, SignUp, Shared}
     const [page, setPage] = useState(Page.Index)
-    const [term, setTerm] = useState<Term>("A");
+    const [term, setTerm] = useState<Types.Term>("A");
     const [user, setUser] = useState<string |null>(null);
     //seperate useState to show another person's schdule, so it can work regardless of login status
     const [sharedUser, setSharedUser] = useState<string |null>(null);
     const [academicYear, setAcademicYear] = useState(2026);
-    const [sections, setSections] = useState<CourseSection[]>([]);
+    const [sections, setSections] = useState<Types.CourseSection[]>([]);
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the index page
-    function loadIndex(event: MouseEvent): void {
+    function loadIndex(): void {
         console.log("Going to index page")
         setPage(Page.Index)
         history.pushState({}, "", "/")
@@ -33,7 +33,7 @@ function App() {
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the login page
-    function loadLogin(event: MouseEvent): void {
+    function loadLogin(): void {
         console.log("Going to login page")
         history.replaceState({}, "", "/");
         setPage(Page.Login)
@@ -41,7 +41,7 @@ function App() {
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the account creation page
-    function loadSignUp(event: MouseEvent): void{
+    function loadSignUp(): void{
         console.log("Going to account creation page")
         history.replaceState({}, "", "/");
         setPage(Page.SignUp)
@@ -49,7 +49,7 @@ function App() {
 
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the shared schedule page
-    function loadShared(event: MouseEvent): void{
+    function loadShared(): void{
         console.log("Going to a shared schedule page")
         history.pushState({},"",`/user/${sharedUser}`)
         setPage(Page.Shared)
@@ -82,7 +82,7 @@ function App() {
         if (userToFetch) {
             fetch("/api/courses/" + userToFetch).then(r => {
             return r.json();
-        }).then(sections => {
+        }).then((sections: Types.CourseDBTuple[]) => {
             setSections(filterCourseSections(sections, academicYear, term))
         });
         }
@@ -103,7 +103,7 @@ function App() {
     if(!user && page == Page.Login){
         // Loads the login page only if the user is not logged in
         return <>
-            <Header loggedIn={false} loadIndex={loadIndex} loadLogin={loadLogin} />
+            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections} />
             <main>
                 <AuthForm isLogin={true} onLogin={setUser} loadSignUp={loadSignUp} />
             </main>
@@ -112,7 +112,7 @@ function App() {
     else if(!user && page == Page.SignUp){
         // Loads the account creation page only if the user is not logged in
         return <>
-            <Header loggedIn={false} loadIndex={loadIndex} loadLogin={loadLogin} />
+            <Header loggedIn={false} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections} />
             <main>
                 <AuthForm isLogin={false} onLogin={setUser} loadLogin={loadLogin} />
             </main>
@@ -123,7 +123,7 @@ function App() {
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
             <main>
-                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
+                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
                     <option value="A" selected>A term</option>
                     <option value="B">B term</option>
                     <option value="F">Fall Semester</option>
@@ -153,7 +153,7 @@ function App() {
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
             <main>
-                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
+                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
                     <option value="A" selected>A term</option>
                     <option value="B">B term</option>
                     <option value="F">Fall Semester</option>
