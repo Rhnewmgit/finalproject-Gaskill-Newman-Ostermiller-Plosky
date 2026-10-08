@@ -10,6 +10,9 @@ export function Schedule(props: {sections: CourseSection[]}) {
         hours.push(h);
     }
 
+    const courseColors = new Map<string, number>();
+    let lastCourseColor = 0;
+
     return <div class="schedule">
         <div class="header-stripe"></div>
         {hours.map((hour, hourIndex) => {
@@ -34,8 +37,15 @@ export function Schedule(props: {sections: CourseSection[]}) {
                 {day}
             </div>
         })}
-        {props.sections.map((section, index) => {
-            const cssclass = "course-section course" + index
+        {props.sections.map(section => {
+            let courseColor = courseColors.get(section.code);
+            if (!courseColor) {
+                courseColor = lastCourseColor;
+                courseColors.set(section.code, courseColor);
+                lastCourseColor++;
+            }
+
+            const cssclass = "course-section course" + courseColor
             return <>
                 {section.meetings.map(meeting => {
                     return <div class={cssclass} style={{
