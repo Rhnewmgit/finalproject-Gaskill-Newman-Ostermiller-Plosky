@@ -1,12 +1,14 @@
 import { render } from "preact"
 import { useEffect, useState } from "preact/hooks";
 import { exportScheduleImage } from "./exportScheduleImage.js"
+import { exportIcal } from "./exportIcal.js"
 import { Schedule } from "./Schedule.js";
 import { AuthForm } from "./AuthForm.js"
 import * as Types from "../shared/types.js";
 import { Header } from "./Header.js";
 import { filterCourseSections } from "../shared/util"
 import { ShareDialog } from "./ShareDialog.jsx";
+import { TermSelect } from "./TermSelect.js"
 
 function App() {
 
@@ -29,7 +31,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the index page
     function loadIndex(): void {
-        console.log("Going to index page")
+        // console.log("Going to index page")
         setPage(Page.Index)
         history.pushState({}, "", "/")
         if (sharedUser) setSharedUser(null)
@@ -38,7 +40,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the login page
     function loadLogin(): void {
-        console.log("Going to login page")
+        // console.log("Going to login page")
         history.replaceState({}, "", "/");
         setPage(Page.Login)
     }
@@ -46,7 +48,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the account creation page
     function loadSignUp(): void{
-        console.log("Going to account creation page")
+        // console.log("Going to account creation page")
         history.replaceState({}, "", "/");
         setPage(Page.SignUp)
     }
@@ -54,7 +56,7 @@ function App() {
     // This function can be passed down to components and set as an onclick
     // function for buttons which go to the shared schedule page
     function loadShared(): void{
-        console.log("Going to a shared schedule page")
+        // console.log("Going to a shared schedule page")
         history.pushState({},"",`/user/${sharedUser}`)
         setPage(Page.Shared)
     }
@@ -81,7 +83,7 @@ function App() {
 
     useEffect(() => {
         const userToFetch =  sharedUser || user
-        console.log("Fetching courses for the user")
+        // console.log("Fetching courses for the user")
 
         if (userToFetch) {
             fetch("/api/courses/" + userToFetch).then(r => {
@@ -138,23 +140,12 @@ function App() {
             term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} 
             setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
-                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
-                    <option value="A" selected>A term</option>
-                    <option value="B">B term</option>
-                    <option value="F">Fall Semester</option>
-                    <option value="C">C term</option>
-                    <option value="D">D term</option>
-                    <option value="S">Spring Semester</option>
-                    <option value="G">Graduate Spring Late Start</option>
-                    <option value="E1">E1 term</option>
-                    <option value="E2">E2 term</option>
-                    <option value="E">Summer term</option>
-                </select>
                 <select class="centered" onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
                     {years.map((year)=>(
                         <option value={year} key={year}>{year}-{year+1}</option>
                     ))}
                 </select>
+                <TermSelect setTerm={setTerm} />
                 <div class="sidescroller">
                     <Schedule sections={filteredSections} />
                 </div>
@@ -174,46 +165,44 @@ function App() {
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
             setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
-                {isCourses && <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
-                    <option value="A" selected>A term</option>
-                    <option value="B">B term</option>
-                    <option value="F">Fall Semester</option>
-                    <option value="C">C term</option>
-                    <option value="D">D term</option>
-                    <option value="S">Spring Semester</option>
-                    <option value="G">Graduate Spring Late Start</option>
-                    <option value="E1">E1 term</option>
-                    <option value="E2">E2 term</option>
-                    <option value="E">Summer term</option>
-                </select>}
                 <select class="centered" onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
                     {years.map((year)=>(
                         <option value={year} key={year}>{year}-{year+1}</option>
                     ))}
                 </select>
+                {isCourses && <TermSelect setTerm={setTerm} />}
+                
                 <div class="sidescroller">
                     {isCourses
                         ? (user ? 
                             <Schedule sections={filteredSections} />
                             : <>
-                                <p>Log in to save your schedule</p>
+                                <p class='centered-text'>Log in to save your schedule.</p>
                                 <Schedule sections={filteredSections}/>
                             </>)
-                        : (<p class='centered'>
-                            You can export your courses as an Excel file found on Workday.
-                            Go to your academics hub, and select View Details under Current Courses.
-                            On the top right of that page, or under the "View My Courses" heading,
-                            click the button to obtain the excel file.
-                            And then you can upload the file using the Upload Schedule button.
-                        </p>)
+                        : (<>
+                            <p>You can export your courses as an Excel file found on Workday.
+                            Go to your academics hub, and select View Details under Current Courses.</p>
+
+                            <p>The button to download the excel file will either be at the top right of the page,
+                            or directly under the "View Courses" header. Don't use the semester-specific
+                            excel download button, only the full-year one will work!</p>
+
+                            <p>Then you can upload the file using the Upload Schedule button at the top of this page.</p>
+                        </>)
                     }
                 </div>
-                {user && <div class='centered button-div'>
-                    <button onClick={async () => {
-                        await exportScheduleImage(user, academicYear, term);
-                    }}>Export Image</button>
-                    <ShareDialog user={user}/>
-                </div>}
+                <div class='centered button-div'>
+                    {filteredSections.length > 0 && <>
+                        <button onClick={async () => {
+                            await exportScheduleImage(filteredSections);
+                        }}>Export Image</button>
+                        <button onClick={() => {
+                            exportIcal(filteredSections);
+                        }}>Export for Calendar</button>
+                        {user && <ShareDialog user={user}/>}
+                    </>}
+                </div>
             </main>
         </>
     }

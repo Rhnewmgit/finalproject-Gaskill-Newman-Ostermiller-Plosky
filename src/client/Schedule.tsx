@@ -10,6 +10,9 @@ export function Schedule(props: {sections: CourseSection[]}) {
         hours.push(h);
     }
 
+    const courseColors = new Map<string, number>();
+    let lastCourseColor = 0;
+
     return <div class="schedule">
         <div class="header-stripe"></div>
         {hours.map((hour, hourIndex) => {
@@ -34,18 +37,28 @@ export function Schedule(props: {sections: CourseSection[]}) {
                 {day}
             </div>
         })}
-        {props.sections.map((section, index) => {
-            const cssclass = "course-section course" + index
+        {props.sections.map(section => {
+            let courseColor;
+            if (courseColors.has(section.code)) {
+                courseColor = courseColors.get(section.code);
+            } else {
+                courseColor = lastCourseColor;
+                courseColors.set(section.code, courseColor);
+                lastCourseColor++;
+            }
+
+            const cssclass = "course-section course" + courseColor
             return <>
                 {section.meetings.map(meeting => {
                     return <div class={cssclass} style={{
                         gridRow: timeToRow(meeting.startTime, extremes.earliest) + " / " + timeToRow(meeting.endTime, extremes.earliest),
                         gridColumn: meeting.day + 2
                     }}>
+                        <p>{section.code}-{section.section}</p>
                         <p>{section.name}</p>
-                        <p>{section.type}</p>
-                        <p>{section.professors.join(", ")}</p>
                         <p>{meeting.location}</p>
+                        <p>{section.professors.join(", ")}</p>
+                        <p>{section.type}</p>
                     </div>
                 })}
             </>

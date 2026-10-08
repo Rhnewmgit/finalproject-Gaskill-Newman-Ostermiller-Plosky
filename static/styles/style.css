@@ -3,6 +3,8 @@
     --wpi-red:#AC2B37;
     --wpi-gray:#A9B0B7;
     --dark-red:#630811;
+    --error-color:#dfb156;
+    --error-color-2:#ab802a;
 }
 
 /* DEFAULTS AND PAGE CONTAINERS */
@@ -40,9 +42,7 @@ button, select, .file-input{
         background-color:var(--dark-red);
     }
     &:focus, &:focus-within{
-        /* Focus-within styles .file-input label when the input is focused */
         outline:3px dotted var(--wpi-gray);
-        background-color:var(--dark-red);
     }
 }
 input[type=text], input[type=password], textarea{
@@ -68,6 +68,11 @@ input[type="file"]{
 .centered{
     margin:0 auto;
 }
+.centered-text{
+    text-align:center;
+    margin-top:1rem;
+    display:block;
+}
 .sidescroller{
     max-width:100%;
     overflow-x:auto;
@@ -84,17 +89,33 @@ input[type="file"]{
 
     &:hover{
         background-color:unset;
+        color:var(--dark-red);
     }
 }
-.fake-link:hover{
-    color:var(--dark-red);
+.flex{
+    display:flex;
+}
+.copied{
+    background-color: rgb(1, 210, 1);
+    &:focus{
+        background-color:darkgreen;
+    }
+}
+.error{
+    background-color:var(--error-color);
+    padding:.5rem;
+    border-radius:5px;
+    border:2px solid var(--error-color-2);
+    width:fit-content;
+    margin-bottom:1rem;
 }
 
 /* MAIN CONTENT WRAPPERS */
 header{
     background-color:var(--wpi-red);
     color:white;
-    padding:.7rem;
+    /* padding:.7rem; */
+    /* padding:0 .7rem; */
     display:flex;
     align-items:end;
     :last-child{
@@ -104,19 +125,63 @@ header{
 header .title{
     font-weight:bold;
     font-size:20px;
-    padding:.8rem;
-    /* subtract 1 px to align baseline with 2px smaller links */
-    padding-bottom:calc(.8rem - 1px); 
     margin:0;
 }
-header > button, header > .file-input{
-    background-color:transparent;
-    &:hover{
-        background-color:transparent;
+header button, header .file-input{
+    height:4rem;
+    align-content:center;
+    padding: 0 1rem;
+    &:focus, &:focus-within{
+        text-decoration:underline dotted var(--wpi-gray) 3px;
+        outline:none;
     }
 }
 main{
     padding:1rem;
+}
+
+/* MAIN PAGE */
+.sidescroller p{
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.button-div{
+    width:max-content;
+
+    button{
+        display:inline;
+    }
+    
+    > button:nth-child(n + 1){
+        margin-left:1rem;
+    }
+}
+
+/* SHARING DIALOG */
+body:has(dialog[open]){
+    overflow:hidden;
+}
+dialog{
+    padding:2rem;
+    border:none;
+    border-radius: 2rem;
+    input{
+        field-sizing:content;
+    }
+    button{
+        padding-top: 0.4em;
+        padding-bottom: 0.4em;
+        margin-left:0.4rem;
+    }
+    .close-button{
+        height:fit-content;
+        margin-left:auto;
+    }
+    p{
+        width:fit-content;
+        margin-top:0;
+    }
 }
 
 /* AUTH FORM */
@@ -134,21 +199,12 @@ main{
         grid-column-start:2;
     }
 }
-.auth-link{
-    text-align:center;
-    margin-top:1rem;
-    /* width:100%; */
-    display:block;
-}
-.error{
-    color:red;
-}
 
 /* SCHEDULE GRID */
 .schedule {
     border-bottom:3px solid lightgray;
     display: grid;
-    grid-auto-rows:minmax(10px, auto);
+    grid-auto-rows:minmax(5px, auto);
     grid-template-columns:1fr repeat(5, 3fr);
 
     div {
@@ -172,12 +228,15 @@ main{
     .course-section {
         margin: 2px;
         background-color: #ddd;
-    }
-    .course-section p {
-        margin-top: 0;
-    }
-    .course-section p:first-of-type{
-        font-weight:bold;
+
+        p {
+             margin-top: 0;
+             margin-bottom: 0.25em;
+        }
+
+        :first-of-type, :nth-child(2) {
+            font-weight: bold;
+        }
     }
 
     .course0{
@@ -216,48 +275,4 @@ main{
     .course11{
         background-color:rgb(163, 101, 126);
     }
-}
-
-/* SHARING */
-.button-div{
-    width:25%;
-    display:flex;
-    justify-content: space-around;
-    button{
-        display:inline;
-    }
-}
-
-dialog{
-    width: 40%;
-    height: 25%;
-    border:white;
-    border-radius: 25px;
-    input{
-        field-sizing:content;
-    }
-    button{
-        margin-left:auto;
-        margin-right:0;
-        padding-top: 0.4em;
-        padding-bottom: 0.4em;
-        &:focus{
-        /* Focus-within styles .file-input label when the input is focused */
-            outline:3px dotted var(--wpi-gray);
-            background-color:darkgreen;
-        }
-    }
-    input{
-        margin-right:0.4em;
-    }
-}
-.copied{
-        background-color: rgb(1, 210, 1);
-}
-body:has(dialog[open]){
-    overflow:hidden;
-}
-.flex{
-    display: flex;
-    align-content: flex-end;
 }
