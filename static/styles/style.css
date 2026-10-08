@@ -126,6 +126,11 @@ main{
 }
 
 /* MAIN PAGE */
+.sidescroller p{
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+}
 .button-div{
     width:max-content;
 
@@ -179,10 +184,9 @@ dialog{
         grid-column-start:2;
     }
 }
-auth-link{
+.auth-link{
     text-align:center;
     margin-top:1rem;
-    /* width:100%; */
     display:block;
 }
 
