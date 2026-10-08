@@ -82,7 +82,7 @@ function App() {
         if (userToFetch) {
             fetch("/api/courses/" + userToFetch).then(r => {
             return r.json();
-        }).then((sections: Types.CourseDBTuple[]) => {
+        }).then((sections: Types.CourseSection[]) => {
             setSections(filterCourseSections(sections, academicYear, term))
         });
         }

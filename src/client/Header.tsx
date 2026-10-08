@@ -23,7 +23,7 @@ export function Header(props: {
                 method: 'POST',
                 body: formData,
             });
-            const courseSections: Types.CourseDBTuple[] = await response.json();
+            const courseSections: Types.CourseSection[] = await response.json();
             console.log(props.academicYear, props.term)
             if (courseSections.length) {
                 console.log(filterCourseSections(courseSections, props.academicYear, props.term));

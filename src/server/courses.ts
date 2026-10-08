@@ -21,7 +21,7 @@ export function courseRoutes(app: express.Express) {
             return;
         }
 
-        const courseSections = await getCourseSections(user);
+        const courseSections = await getCourseSections(user.courses);
 
         res.status(200).json(courseSections);
     });
@@ -61,8 +61,8 @@ export function courseRoutes(app: express.Express) {
                 // });
                 const courseYear: Number = userCourses[0].academicYear;
 
-                const newCourses: Types.CourseDBTuple[] = userCourses.map((course)=>{return {code: course.code, section: course.section, academicYear:course.academicYear}}).filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
-                res.json(newCourses);
+                const courseSections = await getCourseSections(userCourses);
+                res.json(courseSections);
                 return;
             }else{
                 console.log("Went to user route on parse")
@@ -73,7 +73,7 @@ export function courseRoutes(app: express.Express) {
                 //const updatedUser = await User.findById(user._id)
                 user.set('courses', newCourses);
                 await user.save()
-                const courseSections = await getCourseSections(user);
+                const courseSections = await getCourseSections(user.courses);
                 res.json(courseSections);
             }
         });
@@ -87,9 +87,9 @@ export function courseRoutes(app: express.Express) {
     });
 }
 
-export async function getCourseSections(user: Types.User): Promise<Types.CourseSection[]> {
+export async function getCourseSections(courses: Types.CourseDBTuple[]): Promise<Types.CourseSection[]> {
     return await CourseSection.find({
-        $or: user.courses.map(course => {
+        $or: courses.map(course => {
             return {
                 code: course.code as any,
                 section: course.section as any,
