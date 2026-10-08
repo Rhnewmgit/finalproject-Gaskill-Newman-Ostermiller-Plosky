@@ -42,12 +42,12 @@ export function AuthForm(props: any){
             <button type="submit">{props.isLogin? 'Log In' : 'Sign Up'}</button>
         </form>
         {props.isLogin ?
-            <div class='auth-link'>
+            <div class='centered-text'>
                 No account yet?
                 <button class='fake-link' type='button' onClick={props.loadSignUp}>Sign up here!</button>
             </div> 
         :
-            <div class='auth-link'>
+            <div class='centered-text'>
                 <button class='fake-link' type='button' onClick={props.loadLogin}>Return to login page</button>
             </div> 
         }   
