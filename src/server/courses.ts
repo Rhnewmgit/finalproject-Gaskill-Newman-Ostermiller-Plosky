@@ -55,7 +55,7 @@ export function courseRoutes(app: express.Express) {
             }
             const user = await getUserByToken(req.session?.token);
             if (!user) {
-                console.log("Went to no user route on parse")
+                // console.log("Went to no user route on parse")
                 // res.status(404).json({
                 //     error: "User not found"
                 // });
@@ -64,8 +64,8 @@ export function courseRoutes(app: express.Express) {
                 const courseSections = await getCourseSections(userCourses);
                 res.json(courseSections);
                 return;
-            }else{
-                console.log("Went to user route on parse")
+            } else {
+                // console.log("Went to user route on parse")
                 const courseYear: Number = userCourses[0].academicYear;
                 const newCourses: Types.CourseDBTuple[] = user.courses.filter(course => course.academicYear != courseYear).concat(userCourses as any[]);
                 // console.log(newCourses);
