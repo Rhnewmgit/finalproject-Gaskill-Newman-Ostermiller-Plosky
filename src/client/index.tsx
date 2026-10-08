@@ -154,14 +154,7 @@ function App() {
                                 <Schedule sections={sections}/>
                             </>)
                         : (<>
-                            <p>You can export your courses as an Excel file found on Workday.
-                            Go to your academics hub, and select View Details under Current Courses.</p>
-
-                            <p>The button to download the excel file will either be at the top right of the page,
-                            or directly under the "View Courses" header. Don't use the semester-specific
-                            excel download button, only the full-year one will work!</p>
-
-                            <p>Then you can upload the file using the Upload Schedule button at the top of this page.</p>
+                            <p>Upload your schedule to view or share it.</p>
                         </>)
                     }
                 </div>

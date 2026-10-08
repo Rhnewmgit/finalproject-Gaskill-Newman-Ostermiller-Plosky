@@ -1,5 +1,7 @@
+import { useState } from "preact/hooks";
+import { useSignal } from "@preact/signals"
 import * as Types from "../shared/types";
-import { filterCourseSections } from "../shared/util"
+import { UploadDialog } from "./UploadDialog"
 
 export function Header(props: { 
     loggedIn: boolean,
@@ -12,27 +14,7 @@ export function Header(props: {
     loadIndex: () => void,
     loadLogin: () => void
 }) {
-    // Sends the selected file to the server
-    async function handleFileInput(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];        
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            const response = await fetch("/api/courses", {
-                method: 'POST',
-                body: formData,
-            });
-            const courseSections: Types.CourseSection[] = await response.json();
-            console.log(props.academicYear, props.term)
-            if (courseSections.length) {
-                console.log(filterCourseSections(courseSections, props.academicYear, props.term));
-                props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
-                props.setAcademicYear(courseSections[0].academicYearStart);
-                props.loadIndex()
-            }      
-        }
-    }
+    const showUpload = useSignal<() => void>(() => {});
         
     // Sends a logout request to the server
     const handleLogout = async(event : Event) =>{
@@ -48,12 +30,12 @@ export function Header(props: {
     }
 
     return <>
+        <UploadDialog term={props.term} academicYear={props.academicYear} setAcademicYear={props.setAcademicYear} setSections={props.setSections} loadIndex={props.loadIndex} show={showUpload} />
         <header>
             <button class='title' type='button' onClick={props.loadIndex}>WPI Schedule Viewer</button>
-            <label class="file-input">
-                <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
-                Upload Schedule
-            </label>
+            <button onClick={() => {
+                showUpload.value();
+            }}>Upload Schedule</button>
             {props.loggedIn
                 ? <><form onSubmit={handleLogout}>
                         <button type='submit'>Log Out</button>
