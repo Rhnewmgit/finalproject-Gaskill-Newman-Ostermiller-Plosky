@@ -44,7 +44,7 @@ export function ShareDialog(props : {user:string}){
                 </div>
                 <p>Want to share your schedule with other users?</p>
                 <p>Click 'copy' and send them this link!</p>
-                <input type='text' readonly value={link}/> 
+                <input type='text' name="copyLink" readonly value={link}/> 
                 {isCopied ? <button class='copied' onClick={copyLink}>Copied</button>
                     : <button onClick={copyLink}>Copy</button>}
             </dialog>

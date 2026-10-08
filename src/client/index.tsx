@@ -121,7 +121,7 @@ function App() {
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
             <main>
-                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
+                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)} name="term">
                     <option value="A" selected>A term</option>
                     <option value="B">B term</option>
                     <option value="F">Fall Semester</option>
@@ -151,7 +151,7 @@ function App() {
             <Header loggedIn={!!user} setUser={setUser} loadIndex={loadIndex} loadLogin={loadLogin} 
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} setSections={setSections}/>
             <main>
-                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)}>
+                <select class="centered" onChange={e => setTerm((e.target as HTMLSelectElement).value as Term)} name="term">
                     <option value="A" selected>A term</option>
                     <option value="B">B term</option>
                     <option value="F">Fall Semester</option>
