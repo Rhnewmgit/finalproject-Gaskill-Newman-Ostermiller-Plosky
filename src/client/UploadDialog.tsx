@@ -7,6 +7,7 @@ export function UploadDialog(props: {
     show: Signal<() => void>,
     term: Types.Term,
     academicYear: number,
+    sections: Types.CourseSection[],
     setSections: (sections: Types.CourseSection[]) => void,
     setAcademicYear: (year: number) => void,
     setIsCourses: (isCourses: boolean) => void,
@@ -29,7 +30,7 @@ export function UploadDialog(props: {
             if ("error" in courseSections) {
                 setErrorMsg(courseSections.error);
             } else if (courseSections.length) {
-                props.setSections(courseSections);
+                props.setSections(props.sections.filter(section => section.academicYearStart != courseSections[0].academicYearStart).concat(courseSections));
                 props.setAcademicYear(courseSections[0].academicYearStart);
                 props.loadIndex()
                 props.setIsCourses(true);
