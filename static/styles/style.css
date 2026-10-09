@@ -142,19 +142,14 @@ main{
 }
 
 /* MAIN PAGE */
-.sidescroller p{
-    max-width:800px;
-    margin-left:auto;
-    margin-right:auto;
-}
 .button-div{
     width:max-content;
 
-    button{
+    button, select{
         display:inline;
     }
     
-    > button:nth-child(n + 1){
+    > :nth-child(n + 1){
         margin-left:1rem;
     }
 }
@@ -164,6 +159,7 @@ body:has(dialog[open]){
     overflow:hidden;
 }
 dialog{
+    max-width:800px;
     padding:2rem;
     border:none;
     border-radius: 2rem;
