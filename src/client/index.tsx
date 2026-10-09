@@ -167,7 +167,7 @@ function App() {
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
             setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
-                {isCourses > 0 && <div class='centered button-div'>
+                {isCourses && <div class='centered button-div'>
                     <select class="centered" name="AcademicYearSelect" 
                 aria-label="Select the academic year" 
                 onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
