@@ -162,17 +162,19 @@ function App() {
             term={term} user={user} academicYear={academicYear} setAcademicYear={setAcademicYear} 
             setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
-                <select class="centered" name="AcademicYearSelect" 
+                {isCourses > 0 && <div class='centered button-div'>
+                    <select class="centered" name="AcademicYearSelect" 
                 aria-label="Select the academic year" 
                 onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
-                    {years.map((year)=>(
-                        <option value={year} key={year}>{year}-{year+1}</option>
-                    ))}
-                </select>
-                {isCourses && <TermSelect setTerm={setTerm} />}
+                        {years.map((year)=>(
+                            <option value={year} key={year}>{year}-{year+1}</option>
+                        ))}
+                    </select>
+                    <TermSelect setTerm={setTerm} />
+                </div>}
                 
                 <div class="sidescroller">
-                    {isCourses
+                    {filteredSections.length > 0
                         ? (user ? 
                             <Schedule sections={filteredSections} />
                             : <>
@@ -180,7 +182,7 @@ function App() {
                                 <Schedule sections={filteredSections}/>
                             </>)
                         : (<>
-                            <p>Upload your schedule to view or share it.</p>
+                            <p class='centered-text'>Upload your schedule to view or share it.</p>
                         </>)
                     }
                 </div>
