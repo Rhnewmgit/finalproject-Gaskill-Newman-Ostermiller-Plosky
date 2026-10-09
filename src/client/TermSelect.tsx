@@ -4,7 +4,8 @@ export function TermSelect(props:{
         setTerm: (term: Types.Term) => void
 }){
     return <>
-        <select class="centered" onChange={e => props.setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
+        <select class="centered" name="TermSelect" aria-label="Select the term" 
+        onChange={e => props.setTerm((e.target as HTMLSelectElement).value as Types.Term)}>
             <option value="A" selected>A term</option>
             <option value="B">B term</option>
             <option value="F">Fall Semester</option>
