@@ -140,14 +140,16 @@ function App() {
             term={term} user={sharedUser} academicYear={academicYear} setAcademicYear={setAcademicYear} 
             setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
-                <select class="centered" name="AcademicYearSelect" 
-                aria-label="Select the Academic Year" 
-                onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
-                    {years.map((year)=>(
-                        <option value={year} key={year}>{year}-{year+1}</option>
-                    ))}
-                </select>
-                <TermSelect setTerm={setTerm} />
+                <div class="centered button-div">
+                    <select name="AcademicYearSelect" 
+                    aria-label="Select the Academic Year" 
+                    onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
+                        {years.map((year)=>(
+                            <option value={year} key={year}>{year}-{year+1}</option>
+                        ))}
+                    </select>
+                    <TermSelect setTerm={setTerm} />
+                </div>
                 <div class="sidescroller">
                     <Schedule sections={filteredSections} />
                 </div>
@@ -168,9 +170,9 @@ function App() {
             setSections={setSections} sections={sections} setIsCourses={setIsCourses} years={years} setYears={setYears}/>
             <main>
                 {isCourses && <div class='centered button-div'>
-                    <select class="centered" name="AcademicYearSelect" 
-                aria-label="Select the academic year" 
-                onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
+                    <select name="AcademicYearSelect" 
+                    aria-label="Select the academic year" 
+                    onChange={e => setAcademicYear(parseInt((e.target as HTMLSelectElement).value))}>
                         {years.map((year)=>(
                             <option value={year} key={year}>{year}-{year+1}</option>
                         ))}
