@@ -149,7 +149,7 @@ main{
         display:inline;
     }
     
-    > :nth-child(n + 1){
+    > button:nth-child(n + 1){
         margin-left:1rem;
     }
 }
