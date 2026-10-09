@@ -12,7 +12,9 @@ Watch a demonstration of the site in action at https://www.youtube.com/watch?v=m
 
 For this project, we made a website that allows users to easily view their class schedule for any given term to easily find the time, location, professor, and type (e.g. lecture) for their classes per term. The user can import their full course schedules for the current year using an Excel spreadsheet that can be exported from their Workday page, which will then populate the schedule. If the user is logged in, their schedule is saved, and it can be additionally shared to others either through an image or a link that can be easily copied. They can additionally export their courses as an .ics file to upload on calendar applications.
 
-The excel file to be uploaded can be found at Workday by going to Student -> Academics Hub -> Current Classes/View Details -> export Excel spreadsheet icon at the top right or directly below the “View Courses” header (importantly, not the export button across from "My Enrolled Courses"). The exported file should be called "View_My_Courses.xlsx", which can then be uploaded on the website by clicking the button on the top left in the header. To create an account, click the log in button at the top right and click the "Sign up here!" link below the login form.
+## Instructions
+
+The excel file to be uploaded can be found at Workday by going to Student -> Academics Hub -> Current Classes/View Details -> export Excel spreadsheet icon at the top right or directly below the “View Courses” header (importantly, not the export button across from "My Enrolled Courses"). The exported file should be called "View_My_Courses.xlsx", which can then be uploaded on the website by clicking the button on the top left in the header. To create an account, click the log in button at the top right and click the "Sign up here!" link below the login form. If needed, a sample course excel spreadsheet and login details for a sample user are provided in the folder labeled "sample".
 
 ## Technologies
 
