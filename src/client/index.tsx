@@ -86,6 +86,11 @@ function App() {
         }).then((sections: Types.CourseSection[]) => {
             setIsCourses(true)
             //setSections(filterCourseSections(sections, academicYear, term))
+            sections.forEach(section => {
+                if (!years.includes(section.academicYearStart)) {
+                    setYears(years.concat([section.academicYearStart]).toSorted())
+                }
+            })
             setSections(sections)
         });
         }
