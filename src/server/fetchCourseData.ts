@@ -118,14 +118,22 @@ function createCourseSection(course: CourseListingsCourseSection, yearcounts: { 
             });
         }
 
+        let startDate = new Date(parts[3] ? parts[3].split(" - ")[0] : course.Course_Section_Start_Date);
+        startDate = new Date(startDate.toLocaleString("en-US", {timeZone: "America/New_York"}));
+        let endDate = new Date(parts[3] ? parts[3].split(" - ")[1] : course.Course_Section_End_Date);
+        endDate = new Date(endDate.toLocaleString("en-US", {timeZone: "America/New_York"}));
+
         // Add each meeting day
         meetingDays.forEach(day => {
+            const startDateDay = new Date(startDate);
+            const endDateDay = new Date(endDate);
+
             meetingPatterns.push({
                 day: day,
                 startTime: timeToMinutesPastMidnight(parts[2].split(" - ")[0]),
                 endTime: timeToMinutesPastMidnight(parts[2].split(" - ")[1]),
-                startDate: new Date(parts[3] ? parts[3].split(" - ")[0] : course.Course_Section_Start_Date).getTime(),
-                endDate: new Date(parts[3] ? parts[3].split(" - ")[1] : course.Course_Section_End_Date).getTime(),
+                startDate: startDateDay.getTime(),
+                endDate: endDateDay.getTime(),
                 location: parts[0].trim()
             })
         })
