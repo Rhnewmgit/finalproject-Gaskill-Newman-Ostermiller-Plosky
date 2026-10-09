@@ -35,7 +35,7 @@ export function Header(props: {
     }
 
     return <>
-        <UploadDialog term={props.term} academicYear={props.academicYear} setAcademicYear={props.setAcademicYear} setSections={props.setSections} loadIndex={props.loadIndex} show={showUpload} />
+        <UploadDialog term={props.term} academicYear={props.academicYear} setAcademicYear={props.setAcademicYear} setSections={props.setSections} loadIndex={props.loadIndex} setIsCourses={props.setIsCourses} show={showUpload} />
         <header>
             <button class='title' type='button' onClick={props.loadIndex}>WPI Schedule Viewer</button>
             <button onClick={() => {
