@@ -29,7 +29,7 @@ export function UploadDialog(props: {
             if ("error" in courseSections) {
                 setErrorMsg(courseSections.error);
             } else if (courseSections.length) {
-                props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
+                props.setSections(courseSections);
                 props.setAcademicYear(courseSections[0].academicYearStart);
                 props.loadIndex()
                 props.setIsCourses(true);
