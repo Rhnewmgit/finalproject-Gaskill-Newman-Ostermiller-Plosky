@@ -37,8 +37,6 @@ export function authRoutes(app:express.Express){
                 error : "Can't sign up when logged in already"
             })
         }
-        // console.log("Sign-up data sent")
-        // console.log(req.body)
         const username : string = req.body.username
         const password : string = req.body.password
         //if username already exists
@@ -66,7 +64,6 @@ export function authRoutes(app:express.Express){
             token: (Math.random()).toString(36).slice(2),
             tokenExpiry: Date.now() + 86400000
         })
-        console.log(newUser)
         try{
             //check if username and password match what's allowed in schema
             await newUser.validate()
@@ -79,7 +76,6 @@ export function authRoutes(app:express.Express){
             return
         }
         await newUser.save()
-        console.log(newUser._id)
         if(req.session) req.session.token = newUser.token
         res.status(200).json({
             success : true,
@@ -107,8 +103,6 @@ export function authRoutes(app:express.Express){
         }
         //check if password is correct
         else if (!(await compare(password, user.password))){
-            // console.log(password)
-            // console.log(user.password)
             res.status(404).json({
                 success : false,
                 error : "Incorrect password"
@@ -122,7 +116,6 @@ export function authRoutes(app:express.Express){
             if(req.session){
                 req.session.token = user.token;
             }
-            // console.log(user._id.toString())
             res.status(200).json({
                 success : true,
                 user : user._id.toString()

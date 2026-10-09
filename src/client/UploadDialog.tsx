@@ -28,7 +28,6 @@ export function UploadDialog(props: {
             if ("error" in courseSections) {
                 setErrorMsg(courseSections.error);
             } else if (courseSections.length) {
-                console.log(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setSections(filterCourseSections(courseSections, props.academicYear, props.term));
                 props.setAcademicYear(courseSections[0].academicYearStart);
                 props.loadIndex()
@@ -57,7 +56,7 @@ export function UploadDialog(props: {
                             <input type="file" id="xlsxInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleFileInput}/>
                             Upload Schedule
                         </label>
-                        (errorMsg.length ? <p class='margin error'> {errorMsg}</p> : null)
+                        {errorMsg && <p class='error'> {errorMsg}</p>}
                     </div>
                     <button class="close-button" onClick={closeDialog}>X</button>
                 </div>

@@ -8,10 +8,7 @@ export function AuthForm(props: any){
         const route :string = props.isLogin ? '/api/log-in' : '/api/sign-up';
         const authForm = event.currentTarget as HTMLFormElement;
         const formData:FormData = new FormData(authForm)
-        console.log(formData)
         const formEntries  = Object.fromEntries(formData)
-        console.log(formEntries)
-        console.log(JSON.stringify(formEntries))
 		const json = await fetch( route, {
             method:'POST',
             body: JSON.stringify(formEntries),
